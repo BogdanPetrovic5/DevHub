@@ -1,4 +1,6 @@
-
+**/appsettings*.json
+**/.env
+**/.env.*
 **/node_modules/
 **/.angular/
 **/dist/
@@ -10,3 +12,5 @@
 *.user
 
 .DS_Store
+Backend/Backend/appsettings.json
+Backend/Backend/appsettings.json
