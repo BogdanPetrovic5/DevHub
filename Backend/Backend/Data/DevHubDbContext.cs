@@ -14,7 +14,7 @@ namespace Backend.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<User>().HasKey(u => u.Id);
-            modelBuilder.Entity<User>().HasIndex(u => u.Email);
+            modelBuilder.Entity<User>().HasIndex(u => u.Email).IsUnique();
             modelBuilder.Entity<User>().HasIndex(u => u.Username);
         }
     }
