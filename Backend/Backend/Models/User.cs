@@ -8,6 +8,7 @@
         public string LastName { get; set; } = String.Empty;
         public string Email { get; set; } = String.Empty;
         public string PasswordHash { get; set; } = String.Empty;
+        public List<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
 
     }
 }
