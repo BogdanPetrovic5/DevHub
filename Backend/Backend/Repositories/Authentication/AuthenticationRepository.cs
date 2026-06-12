@@ -5,7 +5,7 @@ using Backend.Models;
 using Backend.Responses;
 using Microsoft.EntityFrameworkCore;
 
-namespace Backend.Repositories
+namespace Backend.Repositories.Authentication
 {
     public class AuthenticationRepository : IAuthenticationRepository
     {
@@ -40,6 +40,11 @@ namespace Backend.Repositories
         public async Task<bool> EmailExists(string email)
         {
             return await _devHubDbContext.Users.AnyAsync(u => u.Email == email);
+        }
+
+        public async Task<User?> GetUserByEmail(string email)
+        {
+            return await _devHubDbContext.Users.FirstAsync(u => u.Email == email);
         }
     }
 }

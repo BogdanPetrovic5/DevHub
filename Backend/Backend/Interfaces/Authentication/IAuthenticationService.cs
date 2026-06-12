@@ -6,5 +6,6 @@ namespace Backend.Interfaces.Authentication
     public interface IAuthenticationService
     {
         Task<AuthResponse> Register(RegistrationDto registrationDto);
+        Task<AuthResponse> Login(LoginDto loginDto);
     }
 }
