@@ -1,0 +1,193 @@
+<div class="landing">
+
+  <div class="glow glow--left"></div>
+  <div class="glow glow--right"></div>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="navbar__logo">
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+        <path d="M16 2L4 8v16l12 6 12-6V8L16 2z" fill="#a6cfd5" stroke="#c2e7d9" stroke-width="1"/>
+        <path d="M16 8l-6 3v8l6 3 6-3v-8L16 8z" fill="#26408b"/>
+        <circle cx="16" cy="16" r="3" fill="#c2e7d9"/>
+      </svg>
+      <span class="navbar__logo-text">DevHub</span>
+    </div>
+    <ul class="navbar__links">
+      <li><a href="#">Features</a></li>
+      <li><a href="#">Explore</a></li>
+      <li><a href="#">Pricing</a></li>
+    </ul>
+    <div class="navbar__actions">
+      <a class="btn btn--ghost" (click)="navigate('auth')">Sign in</a>
+      <a href="#" class="btn btn--primary">Get started</a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero__content">
+      <div class="hero__badge">Git-based Code Platform</div>
+      <h1 class="hero__title">
+        Push code, track changes,<br>
+        <span class="hero__title--accent">collaborate freely.</span>
+      </h1>
+      <p class="hero__subtitle">
+        DevHub is your self-hosted Git platform. Push code with <code class="hero__code">devhub push</code>,
+        browse your file tree, track every commit, and collaborate through issues — all in one place.
+      </p>
+      <div class="hero__actions">
+        <a class="btn btn--primary btn--large" (click)="navigate('auth')">Get started free</a>
+        <a href="#" class="btn btn--outline btn--large">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>
+          </svg>
+          View docs
+        </a>
+      </div>
+      <p class="hero__stats">Built for developers who care about <strong>ownership</strong></p>
+    </div>
+
+    <!-- Code window -->
+    <div class="hero__window">
+      <div class="window">
+        <div class="window__bar">
+          <span class="window__dot window__dot--red"></span>
+          <span class="window__dot window__dot--yellow"></span>
+          <span class="window__dot window__dot--green"></span>
+          <span class="window__title">devhub / my-project</span>
+        </div>
+        <div class="window__body">
+          <div class="commit-list">
+            <div class="commit">
+              <div class="commit__avatar commit__avatar--1"></div>
+              <div class="commit__info">
+                <span class="commit__message">feat: add OAuth2 authentication</span>
+                <span class="commit__meta">alex · 2 minutes ago</span>
+              </div>
+              <span class="commit__hash">#a3f92c</span>
+            </div>
+            <div class="commit">
+              <div class="commit__avatar commit__avatar--2"></div>
+              <div class="commit__info">
+                <span class="commit__message">fix: resolve merge conflict in api</span>
+                <span class="commit__meta">sara · 14 minutes ago</span>
+              </div>
+              <span class="commit__hash">#d1b47e</span>
+            </div>
+            <div class="commit">
+              <div class="commit__avatar commit__avatar--3"></div>
+              <div class="commit__info">
+                <span class="commit__message">refactor: clean up database layer</span>
+                <span class="commit__meta">mike · 1 hour ago</span>
+              </div>
+              <span class="commit__hash">#c8a23f</span>
+            </div>
+            <div class="commit">
+              <div class="commit__avatar commit__avatar--1"></div>
+              <div class="commit__info">
+                <span class="commit__message">docs: update contribution guide</span>
+                <span class="commit__meta">alex · 3 hours ago</span>
+              </div>
+              <span class="commit__hash">#f4d901</span>
+            </div>
+          </div>
+          <div class="window__footer">
+            <span class="badge badge--green">● main</span>
+            <span class="badge badge--blue">4 contributors</span>
+            <span class="badge badge--purple">12 new commits</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="features">
+    <div class="features__header">
+      <h2 class="features__title">What DevHub gives you</h2>
+      <p class="features__subtitle">A focused set of tools built around real developer workflows.</p>
+    </div>
+    <div class="features__grid">
+      <div class="feature-card">
+        <div class="feature-card__icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+          </svg>
+        </div>
+        <h3 class="feature-card__title">Public & Private Repositories</h3>
+        <p class="feature-card__desc">Create repositories and choose who can see them. Private repos are protected — any unauthorized request returns <code>403 Forbidden</code>. You own your code.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-card__icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>
+          </svg>
+        </div>
+        <h3 class="feature-card__title">Push with devhub CLI</h3>
+        <p class="feature-card__desc">Use the <code>devhub push</code> command to send your code to a repository. Familiar Git-like workflow, no setup overhead.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-card__icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 3h18v4H3zM3 10h18v4H3zM3 17h18v4H3z" stroke-width="0" fill="currentColor" opacity="0.15"/>
+            <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+            <line x1="3" y1="3" x2="3" y2="21"/><line x1="21" y1="3" x2="21" y2="21"/>
+          </svg>
+        </div>
+        <h3 class="feature-card__title">File Tree Browser</h3>
+        <p class="feature-card__desc">Navigate your repository just like GitHub — browse folders and files, click into any file to see its contents. Built on a recursive tree structure in the backend.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-card__icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+          </svg>
+        </div>
+        <h3 class="feature-card__title">Commit History</h3>
+        <p class="feature-card__desc">Every save creates a commit — message, author, and timestamp. View your full project timeline and see exactly who changed what and when.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-card__icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+        </div>
+        <h3 class="feature-card__title">Issues & Collaboration</h3>
+        <p class="feature-card__desc">Anyone can open an issue on a public repo and leave comments. Only the repository owner can close or delete it — role-based access built into every action.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-card__icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+        </div>
+        <h3 class="feature-card__title">Access Control (RBAC)</h3>
+        <p class="feature-card__desc">Ownership is enforced at the API level. Visitors browse, contributors comment, owners manage. Permissions are checked on every request — not just in the UI.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta">
+    <div class="cta__glow"></div>
+    <h2 class="cta__title">Ready to push your first commit?</h2>
+    <p class="cta__subtitle">Create an account, make a repo, and run <code class="hero__code">devhub push</code> — it's that simple.</p>
+    <a href="#" class="btn btn--primary btn--large">Create free account</a>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer__logo">
+      <svg width="20" height="20" viewBox="0 0 32 32" fill="none">
+        <path d="M16 2L4 8v16l12 6 12-6V8L16 2z" fill="#a6cfd5"/>
+        <circle cx="16" cy="16" r="3" fill="#c2e7d9"/>
+      </svg>
+      <span>DevHub</span>
+    </div>
+    <p class="footer__copy">&copy; 2026 DevHub. Built for developers, by developers.</p>
+  </footer>
+
+</div>

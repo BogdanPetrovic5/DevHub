@@ -1,1 +1,17 @@
 /* You can add global styles to this file, and also import other style files */
+
+:root {
+  --c1: #0d0221;
+  --c2: #0f084b;
+  --c3: #26408b;
+  --c4: #a6cfd5;
+  --c5: #c2e7d9;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: #0d0221;
+  color: #e8f4f8;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
