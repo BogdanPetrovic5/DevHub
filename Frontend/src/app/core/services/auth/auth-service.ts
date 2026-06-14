@@ -11,6 +11,6 @@ export class AuthService {
     register(registerData:RegisterRequest):Observable<AuthResponse>{
         const url = `${environment.apiUrl}/api/auth/register`
         
-        return this._httpClient.post<AuthResponse>(url, registerData)
+        return this._httpClient.post<AuthResponse>(url, registerData, { withCredentials: true })
     }
 }
