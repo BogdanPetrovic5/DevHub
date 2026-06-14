@@ -4,7 +4,7 @@
     <p class="form-header__subtitle">Join millions of developers on DevHub</p>
   </div>
 
-  <form class="form" (ngSubmit)="null">
+  <form class="form" [formGroup]="registerForm" (ngSubmit)="register()">
     <div class="form-group">
       <label class="form-label" for="username">Username</label>
       <div class="input-wrapper">
@@ -12,7 +12,7 @@
           <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
           <circle cx="12" cy="7" r="4"/>
         </svg>
-        <input class="input" id="username" type="text" placeholder="devuser" autocomplete="username" />
+        <input formControlName="username" class="input" id="username" type="text" placeholder="devuser" autocomplete="username" />
       </div>
     </div>
 
@@ -23,7 +23,22 @@
           <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
           <polyline points="22,6 12,13 2,6"/>
         </svg>
-        <input class="input" id="reg-email" type="email" placeholder="you@example.com" autocomplete="email" />
+        <input formControlName="email" class="input" id="reg-email" type="email" placeholder="you@example.com" autocomplete="email" />
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label" for="firstName">First name</label>
+        <div class="input-wrapper">
+          <input formControlName="firstName" class="input input--name" id="firstName" type="text" placeholder="John" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="lastName">Last name</label>
+        <div class="input-wrapper">
+          <input formControlName="lastName" class="input input--name" id="lastName" type="text" placeholder="Doe" />
+        </div>
       </div>
     </div>
 
@@ -34,7 +49,7 @@
           <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
           <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
         </svg>
-        <input class="input" id="reg-password" type="password" placeholder="••••••••" autocomplete="new-password" />
+        <input formControlName="password" class="input" id="reg-password" type="password" placeholder="••••••••" autocomplete="new-password" />
       </div>
     </div>
 
@@ -44,9 +59,16 @@
         <svg class="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M9 12l2 2 4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/>
         </svg>
-        <input class="input" id="confirm-password" type="password" placeholder="••••••••" autocomplete="new-password" />
+        <input formControlName="confirmPassword" class="input" [class.input--error]="passwordMismatch" id="confirm-password" type="password" placeholder="••••••••" autocomplete="new-password" />
       </div>
+      @if (passwordMismatch) {
+        <span class="form-error">Passwords do not match</span>
+      }
     </div>
+
+    @if (errorMessage()) {
+      <span class="form-error">{{ errorMessage() }}</span>
+    }
 
     <p class="form-terms">
       By creating an account you agree to our
@@ -54,7 +76,9 @@
       <a href="#" class="form-link">Privacy Policy</a>.
     </p>
 
-    <button type="submit" class="btn btn--primary btn--full">Create account</button>
+    <button type="submit" class="btn btn--primary btn--full" [disabled]="isLoading()">
+      {{ isLoading() ? 'Creating account...' : 'Create account' }}
+    </button>
 
     <div class="divider"><span>or continue with</span></div>
 
