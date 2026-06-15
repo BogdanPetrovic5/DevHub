@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Service } from '@angular/core';
-import { AuthResponse, RegisterRequest } from '../../models/auth.model';
+import { AuthResponse, LoginRequest, RegisterRequest } from '../../models/auth.model';
 import { environment } from '../../../../environments/environment';
 import { Observable } from 'rxjs';
 
@@ -12,5 +12,12 @@ export class AuthService {
         const url = `${environment.apiUrl}/api/auth/register`
         
         return this._httpClient.post<AuthResponse>(url, registerData, { withCredentials: true })
+    }
+
+    login(logindData:LoginRequest):Observable<AuthResponse>{
+        const url = `${environment.apiUrl}/api/auth/login`
+
+        return this._httpClient.post<AuthResponse>(url, logindData, {withCredentials:true})
+        
     }
 }
