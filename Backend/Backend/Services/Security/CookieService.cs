@@ -11,15 +11,15 @@ namespace Backend.Services.Security
             response.Cookies.Append("accessToken", accessToken, new CookieOptions
             {
                 HttpOnly = true,
-                SameSite = SameSiteMode.Lax,
-                Secure = false, //for dev phase
+                SameSite = SameSiteMode.None,
+                Secure = true,
                 Expires = DateTime.UtcNow.AddMinutes(15)
             });
             response.Cookies.Append("refreshToken", refreshToken, new CookieOptions
             {
                 HttpOnly = true,
-                SameSite = SameSiteMode.Lax,
-                Secure = false, //for dev phase
+                SameSite = SameSiteMode.None,
+                Secure = true, 
                 Expires = DateTime.UtcNow.AddDays(7)
             });
         }
