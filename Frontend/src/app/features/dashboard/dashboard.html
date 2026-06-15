@@ -1,0 +1,229 @@
+<app-app-navbar />
+
+<div class="dashboard">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar__profile">
+      <div class="sidebar__avatar">B</div>
+      <div class="sidebar__user-info">
+        <span class="sidebar__username">Bogdan</span>
+        <span class="sidebar__handle">&#64;bogdanpetrovic</span>
+      </div>
+    </div>
+
+    <nav class="sidebar__nav">
+      <a href="#" class="sidebar__nav-item sidebar__nav-item--active">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+          <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+        </svg>
+        Overview
+      </a>
+      <a href="#" class="sidebar__nav-item">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+        </svg>
+        Repositories
+        <span class="sidebar__nav-badge">12</span>
+      </a>
+      <a href="#" class="sidebar__nav-item">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="8" x2="12" y2="12"/>
+          <line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        Issues
+        <span class="sidebar__nav-badge">3</span>
+      </a>
+      
+    </nav>
+
+    <div class="sidebar__section">
+      <span class="sidebar__section-title">Organizations</span>
+      <div class="sidebar__orgs">
+        <div class="sidebar__org">
+          <div class="sidebar__org-avatar">D</div>
+          <span>DevCorp</span>
+        </div>
+        <div class="sidebar__org">
+          <div class="sidebar__org-avatar">O</div>
+          <span>OpenSource</span>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main content -->
+  <main class="main">
+    <!-- Stats row -->
+    <div class="stats">
+      <div class="stat-card">
+        <div class="stat-card__icon stat-card__icon--blue">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+          </svg>
+        </div>
+        <div class="stat-card__info">
+          <span class="stat-card__value">12</span>
+          <span class="stat-card__label">Repositories</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-card__icon stat-card__icon--cyan">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/>
+            <circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/>
+          </svg>
+        </div>
+        <div class="stat-card__info">
+          <span class="stat-card__value">48</span>
+          <span class="stat-card__label">Commits this week</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-card__icon stat-card__icon--green">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+        </div>
+        <div class="stat-card__info">
+          <span class="stat-card__value">3</span>
+          <span class="stat-card__label">Open Issues</span>
+        </div>
+      </div>
+
+      
+    </div>
+
+    <!-- Two-column layout -->
+    <div class="content-grid">
+      <!-- Repositories -->
+      <section class="section">
+        <div class="section__header">
+          <h2 class="section__title">Recent Repositories</h2>
+          <a href="#" class="section__link">View all</a>
+        </div>
+
+        <div class="repo-list">
+          <div class="repo-card">
+            <div class="repo-card__top">
+              <div class="repo-card__name-row">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+                </svg>
+                <a href="#" class="repo-card__name">DevHub</a>
+                <span class="repo-card__visibility">Public</span>
+              </div>
+              <p class="repo-card__desc">A GitHub-like platform for developers with Angular & .NET</p>
+            </div>
+            <div class="repo-card__meta">
+              <span class="repo-card__lang"><span class="repo-card__lang-dot repo-card__lang-dot--ts"></span>TypeScript</span>
+              <span class="repo-card__stat">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                4
+              </span>
+              <span class="repo-card__updated">Updated 2 hours ago</span>
+            </div>
+          </div>
+
+          <div class="repo-card">
+            <div class="repo-card__top">
+              <div class="repo-card__name-row">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+                </svg>
+                <a href="#" class="repo-card__name">portfolio-v2</a>
+                <span class="repo-card__visibility">Private</span>
+              </div>
+              <p class="repo-card__desc">Personal portfolio site with animations and case studies</p>
+            </div>
+            <div class="repo-card__meta">
+              <span class="repo-card__lang"><span class="repo-card__lang-dot repo-card__lang-dot--scss"></span>SCSS</span>
+              <span class="repo-card__stat">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                11
+              </span>
+              <span class="repo-card__updated">Updated yesterday</span>
+            </div>
+          </div>
+
+          <div class="repo-card">
+            <div class="repo-card__top">
+              <div class="repo-card__name-row">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+                </svg>
+                <a href="#" class="repo-card__name">dotnet-auth-starter</a>
+                <span class="repo-card__visibility">Public</span>
+              </div>
+              <p class="repo-card__desc">.NET 8 auth boilerplate with JWT, refresh tokens, and cookie handling</p>
+            </div>
+            <div class="repo-card__meta">
+              <span class="repo-card__lang"><span class="repo-card__lang-dot repo-card__lang-dot--cs"></span>C#</span>
+              <span class="repo-card__stat">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                7
+              </span>
+              <span class="repo-card__updated">Updated 3 days ago</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Activity feed -->
+      <section class="section">
+        <div class="section__header">
+          <h2 class="section__title">Recent Activity</h2>
+        </div>
+
+        <div class="activity">
+          <div class="activity__item">
+            <div class="activity__dot activity__dot--commit"></div>
+            <div class="activity__content">
+              <span class="activity__action">Pushed <strong>3 commits</strong> to <a href="#" class="activity__repo">DevHub</a></span>
+              <span class="activity__time">2 hours ago</span>
+              <div class="activity__commits">
+                <div class="activity__commit">
+                  <span class="activity__hash">ffe73af</span>
+                  <span class="activity__msg">bug: add withCredentials fix</span>
+                </div>
+                <div class="activity__commit">
+                  <span class="activity__hash">2762a8b</span>
+                  <span class="activity__msg">feat: add CORS credentials</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          
+
+          <div class="activity__item">
+            <div class="activity__dot activity__dot--issue"></div>
+            <div class="activity__content">
+              <span class="activity__action">Closed issue <a href="#" class="activity__repo">#5 Auth cookie not persisting</a></span>
+              <span class="activity__time">2 days ago</span>
+            </div>
+          </div>
+
+          <div class="activity__item">
+            <div class="activity__dot activity__dot--commit"></div>
+            <div class="activity__content">
+              <span class="activity__action">Pushed <strong>1 commit</strong> to <a href="#" class="activity__repo">dotnet-auth-starter</a></span>
+              <span class="activity__time">3 days ago</span>
+              <div class="activity__commits">
+                <div class="activity__commit">
+                  <span class="activity__hash">99bb742</span>
+                  <span class="activity__msg">feat: add CORS configuration</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
