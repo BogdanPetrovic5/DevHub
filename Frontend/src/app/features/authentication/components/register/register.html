@@ -12,8 +12,11 @@
           <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
           <circle cx="12" cy="7" r="4"/>
         </svg>
-        <input formControlName="username" class="input" id="username" type="text" placeholder="devuser" autocomplete="username" />
+        <input formControlName="username" class="input" [class.input--error]="registerForm.get('username')?.invalid && registerForm.get('username')?.touched" id="username" type="text" placeholder="devuser" autocomplete="username" />
       </div>
+      @if (registerForm.get('username')?.invalid && registerForm.get('username')?.touched) {
+        <span class="form-error">Username is required</span>
+      }
     </div>
 
     <div class="form-group">
@@ -23,22 +26,34 @@
           <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
           <polyline points="22,6 12,13 2,6"/>
         </svg>
-        <input formControlName="email" class="input" id="reg-email" type="email" placeholder="you@example.com" autocomplete="email" />
+        <input formControlName="email" class="input" [class.input--error]="registerForm.get('email')?.invalid && registerForm.get('email')?.touched" id="reg-email" type="email" placeholder="you@example.com" autocomplete="email" />
       </div>
+      @if (registerForm.get('email')?.invalid && registerForm.get('email')?.touched) {
+        <span class="form-error">
+          @if (registerForm.get('email')?.hasError('required')) { Email is required }
+          @if (registerForm.get('email')?.hasError('email'))    { Enter a valid email }
+        </span>
+      }
     </div>
 
     <div class="form-row">
       <div class="form-group">
         <label class="form-label" for="firstName">First name</label>
         <div class="input-wrapper">
-          <input formControlName="firstName" class="input input--name" id="firstName" type="text" placeholder="John" />
+          <input formControlName="firstName" class="input input--name" [class.input--error]="registerForm.get('firstName')?.invalid && registerForm.get('firstName')?.touched" id="firstName" type="text" placeholder="John" />
         </div>
+        @if (registerForm.get('firstName')?.invalid && registerForm.get('firstName')?.touched) {
+          <span class="form-error">Required</span>
+        }
       </div>
       <div class="form-group">
         <label class="form-label" for="lastName">Last name</label>
         <div class="input-wrapper">
-          <input formControlName="lastName" class="input input--name" id="lastName" type="text" placeholder="Doe" />
+          <input formControlName="lastName" class="input input--name" [class.input--error]="registerForm.get('lastName')?.invalid && registerForm.get('lastName')?.touched" id="lastName" type="text" placeholder="Doe" />
         </div>
+        @if (registerForm.get('lastName')?.invalid && registerForm.get('lastName')?.touched) {
+          <span class="form-error">Required</span>
+        }
       </div>
     </div>
 
@@ -49,8 +64,14 @@
           <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
           <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
         </svg>
-        <input formControlName="password" class="input" id="reg-password" type="password" placeholder="••••••••" autocomplete="new-password" />
+        <input formControlName="password" class="input" [class.input--error]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched" id="reg-password" type="password" placeholder="••••••••" autocomplete="new-password" />
       </div>
+      @if (registerForm.get('password')?.invalid && registerForm.get('password')?.touched) {
+        <span class="form-error">
+          @if (registerForm.get('password')?.hasError('required'))  { Password is required }
+          @if (registerForm.get('password')?.hasError('minlength')) { Minimum 6 characters }
+        </span>
+      }
     </div>
 
     <div class="form-group">
