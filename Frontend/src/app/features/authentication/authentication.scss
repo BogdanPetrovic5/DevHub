@@ -154,6 +154,23 @@
   }
 }
 
+// ---- Form switch animation ----
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+app-login, app-register {
+  display: block;
+  animation: fadeSlideIn 0.25s ease forwards;
+}
+
 // ---- Responsive ----
 @media (max-width: 1024px) {
   .auth-page {
