@@ -2,6 +2,6 @@
 {
     public interface ICookieService
     {
-        void AppendAuthCookies(HttpResponse response, string accessToken, string refreshToken);
+        void AppendAuthCookies(HttpResponse response, string accessToken, string refreshToken, bool rememberMe);
     }
 }

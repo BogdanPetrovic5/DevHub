@@ -4,7 +4,7 @@ namespace Backend.Services.Security
 {
     public class CookieService : ICookieService
     {
-        public void AppendAuthCookies(HttpResponse response, string accessToken, string refreshToken)
+        public void AppendAuthCookies(HttpResponse response, string accessToken, string refreshToken, bool rememberMe)
         {
            
 
@@ -19,8 +19,8 @@ namespace Backend.Services.Security
             {
                 HttpOnly = true,
                 SameSite = SameSiteMode.None,
-                Secure = true, 
-                Expires = DateTime.UtcNow.AddDays(7)
+                Secure = true,
+                Expires = rememberMe ? DateTime.UtcNow.AddDays(30) : DateTime.UtcNow.AddDays(7)
             });
         }
     }
