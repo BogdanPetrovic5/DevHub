@@ -1,4 +1,6 @@
-import { Component, signal, HostListener } from '@angular/core';
+import { Component, signal, HostListener, inject } from '@angular/core';
+import { Router } from '@angular/router';
+import { AuthService } from '../../../core/services/auth/auth-service';
 
 @Component({
   selector: 'app-app-navbar',
@@ -7,11 +9,48 @@ import { Component, signal, HostListener } from '@angular/core';
   styleUrl: './app-navbar.scss',
 })
 export class AppNavbar {
-  drawerOpen = signal(false);
+  private _router     = inject(Router);
+  private _authService = inject(AuthService);
 
-  toggleDrawer() { this.drawerOpen.update(v => !v); }
-  closeDrawer()  { this.drawerOpen.set(false); }
+  drawerOpen  = signal(false);
+  profileOpen = signal(false);
+
+  toggleDrawer()  { 
+    this.drawerOpen.update(v => !v); }
+
+  closeDrawer()   { 
+    this.drawerOpen.set(false); 
+  }
+  toggleProfile() { 
+    this.profileOpen.update(v => !v); 
+  }
+  closeProfile()  { 
+    this.profileOpen.set(false); 
+  }
+
+  logout() {
+    this._authService.logout().subscribe({
+     next:()=>{
+        this._router.navigate(['auth'])
+     },error:(err)=>{
+        console.log(err.error.message)
+     }
+    });
+    this.closeProfile();
+    this.closeDrawer();
+  }
 
   @HostListener('document:keydown.escape')
-  onEscape() { this.closeDrawer(); }
+  onEscape() {
+    this.closeDrawer();
+    this.closeProfile();
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(e: MouseEvent) {
+    const target = e.target as HTMLElement;
+    if (!target.closest('.navbar__avatar')) {
+      this.closeProfile();
+    }
+  }
 }
