@@ -45,7 +45,7 @@ namespace Backend.Services.Authentication
                 string refreshToken = _jwtService.GenerateRefreshToken();
                 response.RefreshToken = refreshToken;
 
-                await _refreshTokenRepository.SaveRefreshToken(user.Id, refreshToken);
+                await _refreshTokenRepository.SaveRefreshToken(user.Id, refreshToken, false);
             }
 
             return response;
@@ -61,7 +61,7 @@ namespace Backend.Services.Authentication
 
             string accessToken = _jwtService.GenerateAccessToken(user);
             string refreshToken = _jwtService.GenerateRefreshToken();
-            await _refreshTokenRepository.SaveRefreshToken(user.Id, refreshToken);
+            await _refreshTokenRepository.SaveRefreshToken(user.Id, refreshToken, loginDto.RememberMe);
 
             return new AuthResponse
             {

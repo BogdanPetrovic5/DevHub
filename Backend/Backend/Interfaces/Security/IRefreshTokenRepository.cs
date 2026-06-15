@@ -2,6 +2,6 @@
 {
     public interface IRefreshTokenRepository
     {
-        Task SaveRefreshToken(Guid userId, string refreshToken);
+        Task SaveRefreshToken(Guid userId, string refreshToken, bool rememberMe);
     }
 }

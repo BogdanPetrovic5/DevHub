@@ -13,13 +13,13 @@ namespace Backend.Repositories.Security
             _context = context;
         }
 
-        public async Task SaveRefreshToken(Guid userId, string refreshToken)
+        public async Task SaveRefreshToken(Guid userId, string refreshToken, bool rememberMe)
         {
             var token = new RefreshToken
             {
                 Token = refreshToken,
                 UserId = userId,
-                ExpiresAt = DateTime.UtcNow.AddDays(7),
+                ExpiresAt = rememberMe ? DateTime.UtcNow.AddDays(30) : DateTime.UtcNow.AddDays(7),
                 IsRevoked = false
             };
             await _context.RefreshTokens.AddAsync(token);
