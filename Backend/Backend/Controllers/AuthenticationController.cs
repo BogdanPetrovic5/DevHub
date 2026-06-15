@@ -27,7 +27,7 @@ namespace Backend.Controllers
             if (!authResponse.Success)
                 return BadRequest(authResponse);
 
-            _cookieService.AppendAuthCookies(Response, authResponse.AccessToken, authResponse.RefreshToken);
+            _cookieService.AppendAuthCookies(Response, authResponse.AccessToken, authResponse.RefreshToken, false);
 
             return Ok(authResponse);
         }
@@ -40,7 +40,7 @@ namespace Backend.Controllers
                 return Unauthorized(authResponse);
             }
 
-            _cookieService.AppendAuthCookies(Response, authResponse.AccessToken, authResponse.RefreshToken);
+            _cookieService.AppendAuthCookies(Response, authResponse.AccessToken, authResponse.RefreshToken, loginDto.RememberMe);
 
             return Ok(authResponse);
         }

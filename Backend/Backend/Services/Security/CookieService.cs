@@ -4,23 +4,23 @@ namespace Backend.Services.Security
 {
     public class CookieService : ICookieService
     {
-        public void AppendAuthCookies(HttpResponse response, string accessToken, string refreshToken)
+        public void AppendAuthCookies(HttpResponse response, string accessToken, string refreshToken, bool rememberMe)
         {
            
 
             response.Cookies.Append("accessToken", accessToken, new CookieOptions
             {
                 HttpOnly = true,
-                SameSite = SameSiteMode.Lax,
-                Secure = false, //for dev phase
+                SameSite = SameSiteMode.None,
+                Secure = true,
                 Expires = DateTime.UtcNow.AddMinutes(15)
             });
             response.Cookies.Append("refreshToken", refreshToken, new CookieOptions
             {
                 HttpOnly = true,
-                SameSite = SameSiteMode.Lax,
-                Secure = false, //for dev phase
-                Expires = DateTime.UtcNow.AddDays(7)
+                SameSite = SameSiteMode.None,
+                Secure = true,
+                Expires = rememberMe ? DateTime.UtcNow.AddDays(30) : DateTime.UtcNow.AddDays(7)
             });
         }
     }

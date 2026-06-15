@@ -44,7 +44,7 @@ namespace Backend.Repositories.Authentication
 
         public async Task<User?> GetUserByEmail(string email)
         {
-            return await _devHubDbContext.Users.FirstAsync(u => u.Email == email);
+            return await _devHubDbContext.Users.FirstOrDefaultAsync(u => u.Email == email);
         }
     }
 }
