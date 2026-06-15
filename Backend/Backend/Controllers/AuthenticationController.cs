@@ -1,9 +1,12 @@
 ﻿using Backend.Dto;
 using Backend.Interfaces.Authentication;
 using Backend.Interfaces.Security;
+using Backend.Models;
 using Backend.Responses;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Backend.Controllers
 {
@@ -43,6 +46,23 @@ namespace Backend.Controllers
             _cookieService.AppendAuthCookies(Response, authResponse.AccessToken, authResponse.RefreshToken, loginDto.RememberMe);
 
             return Ok(authResponse);
+        }
+        [Authorize]
+        [HttpPost("logout")]
+        public async Task<ActionResult<AuthResponse>> Logout()
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if(userId == null)
+            {
+                return Unauthorized();
+            }
+
+            AuthResponse response = await _authenticationService.Logout(Guid.Parse(userId));
+
+            _cookieService.DeleteAuthCookies(Response);
+
+            return response;
         }
     }
 }

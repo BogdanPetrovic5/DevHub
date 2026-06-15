@@ -46,5 +46,19 @@ namespace Backend.Repositories.Authentication
         {
             return await _devHubDbContext.Users.FirstOrDefaultAsync(u => u.Email == email);
         }
+
+        public async Task<AuthResponse> Logout(Guid userId)
+        {
+            var token = await _devHubDbContext.RefreshTokens
+                .FirstOrDefaultAsync(t => t.UserId == userId);
+
+            if (token != null)
+            {
+                _devHubDbContext.RefreshTokens.Remove(token);
+                await _devHubDbContext.SaveChangesAsync();
+            }
+
+            return new AuthResponse { Success = true, Message = "Logout successful" };
+        }
     }
 }
