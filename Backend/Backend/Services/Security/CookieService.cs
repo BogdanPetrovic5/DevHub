@@ -23,5 +23,11 @@ namespace Backend.Services.Security
                 Expires = rememberMe ? DateTime.UtcNow.AddDays(30) : DateTime.UtcNow.AddDays(7)
             });
         }
+
+        public void DeleteAuthCookies(HttpResponse response)
+        {
+            response.Cookies.Delete("accessToken");
+            response.Cookies.Delete("refreshToken");
+        }
     }
 }

@@ -72,5 +72,10 @@ namespace Backend.Services.Authentication
             };
         }
 
+        public async Task<AuthResponse> Logout(Guid userId)
+        {
+            return await _authenticationRepository.Logout(userId);
+          
+        }
     }
 }
