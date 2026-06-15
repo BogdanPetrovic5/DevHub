@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal, HostListener } from '@angular/core';
 
 @Component({
   selector: 'app-app-navbar',
@@ -6,4 +6,12 @@ import { Component } from '@angular/core';
   templateUrl: './app-navbar.html',
   styleUrl: './app-navbar.scss',
 })
-export class AppNavbar {}
+export class AppNavbar {
+  drawerOpen = signal(false);
+
+  toggleDrawer() { this.drawerOpen.update(v => !v); }
+  closeDrawer()  { this.drawerOpen.set(false); }
+
+  @HostListener('document:keydown.escape')
+  onEscape() { this.closeDrawer(); }
+}
