@@ -8,5 +8,6 @@ namespace Backend.Interfaces.Authentication
         Task<AuthResponse> Register(RegistrationDto registrationDto);
         Task<AuthResponse> Login(LoginDto loginDto);
         Task<AuthResponse> Logout(Guid userId);
+        Task<AuthResponse> Refresh(string refreshToken);
     }
 }

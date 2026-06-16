@@ -10,5 +10,6 @@ namespace Backend.Interfaces.Authentication
         Task<User?> GetUserByEmail(string email);
         Task<bool> EmailExists(string email);
         Task<AuthResponse> Logout(Guid userId);
+        Task<User?> GetUserById(Guid userId);
     }
-}
+ }
