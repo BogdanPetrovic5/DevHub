@@ -7,5 +7,7 @@ namespace Backend.Interfaces.Security
         Task SaveRefreshToken(Guid userId, string refreshToken, bool rememberMe);
         Task<RefreshToken?> GetRefreshToken(string refreshToken);
         Task RevokeAllUserTokens(Guid userId);
+        Task RevokeToken(string refreshToken);
+
     }
 }

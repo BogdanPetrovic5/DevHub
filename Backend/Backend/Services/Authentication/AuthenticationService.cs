@@ -72,9 +72,9 @@ namespace Backend.Services.Authentication
             };
         }
 
-        public async Task<AuthResponse> Logout(Guid userId)
+        public async Task Logout(string refreshToken)
         {
-            return await _authenticationRepository.Logout(userId);
+            await _refreshTokenRepository.RevokeToken(refreshToken);
           
         }
 
