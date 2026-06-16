@@ -65,20 +65,20 @@ namespace Backend.Controllers
             return Ok(authResponse);
         }
         [HttpPost("logout")]
-        public async Task<ActionResult<AuthResponse>> Logout()
+        public async Task<ActionResult> Logout()
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var refreshToken = Request.Cookies["refreshToken"];
 
-            if(userId == null)
+            if(refreshToken != null)
             {
-                return Unauthorized();
+               await _authenticationService.Logout(refreshToken);
             }
 
-            AuthResponse response = await _authenticationService.Logout(Guid.Parse(userId));
+            
 
             _cookieService.DeleteAuthCookies(Response);
 
-            return response;
+            return Ok();
         }
     }
 }

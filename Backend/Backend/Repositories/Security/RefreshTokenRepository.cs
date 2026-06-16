@@ -18,7 +18,17 @@ namespace Backend.Repositories.Security
         {
             return await _context.RefreshTokens.FirstOrDefaultAsync(rt => rt.Token == refreshToken);
         }
+        public async Task RevokeToken(string refreshToken)
+        {
+            var token = await _context.RefreshTokens
+                .FirstOrDefaultAsync(t => t.Token == refreshToken);
 
+            if (token != null)
+            {
+                token.IsRevoked = true;
+                await _context.SaveChangesAsync();
+            }
+        }
         public async Task RevokeAllUserTokens(Guid userId)
         {
             var tokens = _context.RefreshTokens.Where(rt => rt.UserId == userId && !rt.IsRevoked);
