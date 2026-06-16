@@ -41,11 +41,7 @@ namespace Backend.Controllers
                 _cookieService.AppendAuthCookies(Response, authResponse.AccessToken, authResponse.RefreshToken, authResponse.RememberMe);
             }
 
-            return new AuthResponse
-            {
-                Success = false,
-                Message = "Not implemented"
-            };
+            return authResponse;
         }
         [HttpPost("register")]
         public async Task<ActionResult<AuthResponse>> Register(RegistrationDto registrationDto)
