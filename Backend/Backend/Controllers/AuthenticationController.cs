@@ -29,19 +29,16 @@ namespace Backend.Controllers
 
             if(refreshToken == null)
             {
-                return new AuthResponse
-                {
-                    Success = false,
-                    Message = "Refresh token not found"
-                };
+                return Unauthorized(new AuthResponse { Success = false, Message = "Refresh token is missing." });
             }
 
             AuthResponse authResponse = await _authenticationService.Refresh(refreshToken);
-            if (authResponse.Success) { 
-                _cookieService.AppendAuthCookies(Response, authResponse.AccessToken, authResponse.RefreshToken, authResponse.RememberMe);
+            if (!authResponse.Success) { 
+               return Unauthorized(authResponse);
             }
-
+            _cookieService.AppendAuthCookies(Response, authResponse.AccessToken, authResponse.RefreshToken, authResponse.RememberMe);
             return Ok(authResponse);
+
         }
         [HttpPost("register")]
         public async Task<ActionResult<AuthResponse>> Register(RegistrationDto registrationDto)
@@ -67,7 +64,6 @@ namespace Backend.Controllers
 
             return Ok(authResponse);
         }
-        [Authorize]
         [HttpPost("logout")]
         public async Task<ActionResult<AuthResponse>> Logout()
         {
