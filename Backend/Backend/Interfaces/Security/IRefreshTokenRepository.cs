@@ -5,6 +5,7 @@ namespace Backend.Interfaces.Security
     public interface IRefreshTokenRepository
     {
         Task SaveRefreshToken(Guid userId, string refreshToken, bool rememberMe);
+        Task SaveRefreshToken(Guid userId, string refreshToken, bool rememberMe, DateTime expDate);
         Task<RefreshToken?> GetRefreshToken(string refreshToken);
         Task RevokeAllUserTokens(Guid userId);
         Task RevokeToken(string refreshToken);

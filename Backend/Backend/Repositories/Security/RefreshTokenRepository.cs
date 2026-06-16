@@ -53,5 +53,20 @@ namespace Backend.Repositories.Security
             await _context.RefreshTokens.AddAsync(token);
             await _context.SaveChangesAsync();
         }
+
+        public async Task SaveRefreshToken(Guid userId, string refreshToken, bool rememberMe, DateTime expDate)
+        {
+            var token = new RefreshToken
+            {
+                Token = refreshToken,
+                UserId = userId,
+                ExpiresAt = expDate,
+                IsRevoked = false,
+                RememberMe = rememberMe
+
+            };
+            await _context.RefreshTokens.AddAsync(token);
+            await _context.SaveChangesAsync();
+        }
     }
 }
