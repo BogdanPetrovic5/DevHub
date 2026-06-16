@@ -100,7 +100,7 @@ namespace Backend.Services.Authentication
             string newRefreshToken = _jwtService.GenerateRefreshToken();
             token.IsRevoked = true;
 
-            await _refreshTokenRepository.SaveRefreshToken(user.Id, newRefreshToken, token.RememberMe);
+            await _refreshTokenRepository.SaveRefreshToken(user.Id, newRefreshToken, token.RememberMe, token.ExpiresAt);
             return new AuthResponse
             {
                 Success = true,
