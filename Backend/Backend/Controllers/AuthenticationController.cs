@@ -23,7 +23,7 @@ namespace Backend.Controllers
             
         }
         [HttpPost("refresh")]
-        public async Task<AuthResponse> Refresh()
+        public async Task<ActionResult<AuthResponse>> Refresh()
         {
             var refreshToken = Request.Cookies["refreshToken"];
 
@@ -41,7 +41,7 @@ namespace Backend.Controllers
                 _cookieService.AppendAuthCookies(Response, authResponse.AccessToken, authResponse.RefreshToken, authResponse.RememberMe);
             }
 
-            return authResponse;
+            return Ok(authResponse);
         }
         [HttpPost("register")]
         public async Task<ActionResult<AuthResponse>> Register(RegistrationDto registrationDto)
