@@ -31,7 +31,8 @@ A GitHub-inspired developer platform built with Angular 17+ and .NET 10.
 |--------|----------|------|-------------|
 | POST | `/api/auth/register` | No | Register new user, sets auth cookies |
 | POST | `/api/auth/login` | No | Login, sets auth cookies |
-| POST | `/api/auth/logout` | Yes | Logout, clears auth cookies and revokes refresh token |
+| POST | `/api/auth/refresh` | No | Refreshes access token via HttpOnly cookie. Returns 401 if token is missing or invalid |
+| POST | `/api/auth/logout` | No | Logout, clears auth cookies and revokes refresh token |
 
 ## Project Structure
 
