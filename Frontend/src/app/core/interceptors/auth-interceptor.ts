@@ -10,13 +10,11 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(req).pipe(
     catchError(error => {
-      if (error.status === 401 && !req.url.includes('/auth/refresh')) {
+      if (error.status === 401 && !req.url.includes('/auth/refresh') && !req.url.includes('/auth/logout')) {
         return authService.refresh().pipe(
           switchMap(() => next(req)),
           catchError(refreshError => {
-            authService.logout().subscribe();
             router.navigate(['/auth']);
-            
             return throwError(() => refreshError);
           })
         );
