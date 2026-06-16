@@ -60,5 +60,10 @@ namespace Backend.Repositories.Authentication
 
             return new AuthResponse { Success = true, Message = "Logout successful" };
         }
+
+        public async Task<User?> GetUserById(Guid userId)
+        {
+            return await _devHubDbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
+        }
     }
 }

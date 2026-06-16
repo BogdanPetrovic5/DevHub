@@ -77,5 +77,38 @@ namespace Backend.Services.Authentication
             return await _authenticationRepository.Logout(userId);
           
         }
+
+        public async Task<AuthResponse> Refresh(string refreshToken)
+        {
+            RefreshToken? token = await _refreshTokenRepository.GetRefreshToken(refreshToken);
+
+            if(token != null && token.IsRevoked)
+            {
+                await _refreshTokenRepository.RevokeAllUserTokens(token.UserId);
+                return new AuthResponse { Success = false, Message = "Token reuse detected" };
+            }
+            if(token == null || token.ExpiresAt < DateTime.UtcNow)
+            {
+                return new AuthResponse { Success = false, Message = "Invalid or expired refresh token" };
+            }
+            User? user = await _authenticationRepository.GetUserById(token.UserId);
+            if (user == null) { 
+                return new AuthResponse { Success = false, Message = "User not found" };
+            }
+
+            string newAccessToken = _jwtService.GenerateAccessToken(user);
+            string newRefreshToken = _jwtService.GenerateRefreshToken();
+            token.IsRevoked = true;
+
+            await _refreshTokenRepository.SaveRefreshToken(user.Id, newRefreshToken, token.RememberMe);
+            return new AuthResponse
+            {
+                Success = true,
+                Message = "Token refreshed successfully",
+                AccessToken = newAccessToken,
+                RefreshToken = newRefreshToken,
+                RememberMe = token.RememberMe
+            };
+        }
     }
 }

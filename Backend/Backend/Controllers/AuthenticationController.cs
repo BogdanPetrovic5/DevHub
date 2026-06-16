@@ -22,7 +22,31 @@ namespace Backend.Controllers
             _cookieService = cookieService;
             
         }
+        [HttpPost("refresh")]
+        public async Task<AuthResponse> Refresh()
+        {
+            var refreshToken = Request.Cookies["refreshToken"];
 
+            if(refreshToken == null)
+            {
+                return new AuthResponse
+                {
+                    Success = false,
+                    Message = "Refresh token not found"
+                };
+            }
+
+            AuthResponse authResponse = await _authenticationService.Refresh(refreshToken);
+            if (authResponse.Success) { 
+                _cookieService.AppendAuthCookies(Response, authResponse.AccessToken, authResponse.RefreshToken, authResponse.RememberMe);
+            }
+
+            return new AuthResponse
+            {
+                Success = false,
+                Message = "Not implemented"
+            };
+        }
         [HttpPost("register")]
         public async Task<ActionResult<AuthResponse>> Register(RegistrationDto registrationDto)
         {
@@ -30,7 +54,7 @@ namespace Backend.Controllers
             if (!authResponse.Success)
                 return BadRequest(authResponse);
 
-            _cookieService.AppendAuthCookies(Response, authResponse.AccessToken, authResponse.RefreshToken, false);
+            _cookieService.AppendAuthCookies(Response, authResponse.AccessToken, authResponse.RefreshToken, authResponse.RememberMe);
 
             return Ok(authResponse);
         }
