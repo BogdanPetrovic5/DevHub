@@ -21,8 +21,13 @@ export class AuthService {
 
     }
 
-    logout(): Observable<void> {
+    logout(): Observable<AuthResponse> {
         const url = `${environment.apiUrl}/api/auth/logout`
-        return this._httpClient.post<void>(url, {}, { withCredentials: true })
+        return this._httpClient.post<AuthResponse>(url, {}, { withCredentials: true })
+    }
+
+    refresh():Observable<AuthResponse>{
+        const url = `${environment.apiUrl}/api/auth/refresh`;
+        return this._httpClient.post<AuthResponse>(url, {}, {withCredentials:true});
     }
 }
