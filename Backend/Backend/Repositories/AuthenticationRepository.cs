@@ -5,7 +5,7 @@ using Backend.Models;
 using Backend.Responses;
 using Microsoft.EntityFrameworkCore;
 
-namespace Backend.Repositories.Authentication
+namespace Backend.Repositories
 {
     public class AuthenticationRepository : IAuthenticationRepository
     {
@@ -26,13 +26,12 @@ namespace Backend.Repositories.Authentication
                     Message = "User registered successfully"
                 };
             }
-            catch (Exception ex)
+            catch (DbUpdateException)
             {
-                Console.WriteLine($"Error registering user: {ex.Message}");
                 return new AuthResponse
                 {
                     Success = false,
-                    Message = "An error occurred while registering the user"
+                    Message = "Email or username already exists"
                 };
             }
         }

@@ -1,4 +1,7 @@
-﻿namespace Backend.Models
+﻿using Backend.Models.Commit;
+using Backend.Models.Repository;
+
+namespace Backend.Models
 {
     public class User
     {
@@ -9,6 +12,8 @@
         public string Email { get; set; } = String.Empty;
         public string PasswordHash { get; set; } = String.Empty;
         public List<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
+        public List<Repo> Repositories { get; set; } = new List<Repo>();
+        public List<RepoCommit> RepoCommits { get; set; } = new List<RepoCommit>();
 
     }
 }

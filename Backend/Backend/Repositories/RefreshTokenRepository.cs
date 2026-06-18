@@ -3,7 +3,7 @@ using Backend.Interfaces.Security;
 using Backend.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace Backend.Repositories.Security
+namespace Backend.Repositories
 {
     public class RefreshTokenRepository : IRefreshTokenRepository
     {
