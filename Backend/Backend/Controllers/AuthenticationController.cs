@@ -64,7 +64,7 @@ namespace Backend.Controllers
 
             return Ok(authResponse);
         }
-        [HttpPost("logout")]
+        [HttpDelete("logout")]
         public async Task<ActionResult> Logout()
         {
             var refreshToken = Request.Cookies["refreshToken"];
