@@ -3,6 +3,7 @@ using Backend.Dto;
 using Backend.Interfaces.Repository;
 using Backend.Models.Repository;
 using Backend.Responses;
+using Backend.Utility;
 using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Repositories
@@ -35,6 +36,16 @@ namespace Backend.Repositories
                     Message = "You already have a repository with that name"
                 };
             }
+
+        }
+
+        public async Task<List<RepoDto>> GetUserRepos(Guid userId)
+        {
+            return await _context.Repositories
+                .Where(r => r.UserId == userId)
+                .Select(r => r.ToDto())
+                .ToListAsync();
+
 
         }
     }

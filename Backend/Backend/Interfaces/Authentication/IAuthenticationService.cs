@@ -9,5 +9,6 @@ namespace Backend.Interfaces.Authentication
         Task<AuthResponse> Login(LoginDto loginDto);
         Task Logout(string refreshToken);
         Task<AuthResponse> Refresh(string refreshToken);
+
     }
 }
