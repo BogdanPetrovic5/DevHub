@@ -9,12 +9,14 @@ import { AuthService } from '../../../core/services/auth/auth-service';
   styleUrl: './app-navbar.scss',
 })
 export class AppNavbar {
-  private _router     = inject(Router);
+  private _router = inject(Router);
   private _authService = inject(AuthService);
-
-  drawerOpen  = signal(false);
+  
+  drawerOpen = signal(false);
   profileOpen = signal(false);
-
+  navigate(route:string){
+    this._router.navigate(['repository/new'])
+  }
   toggleDrawer()  { 
     this.drawerOpen.update(v => !v); }
 

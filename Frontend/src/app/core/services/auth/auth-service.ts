@@ -23,7 +23,7 @@ export class AuthService {
 
     logout(): Observable<AuthResponse> {
         const url = `${environment.apiUrl}/api/auth/logout`
-        return this._httpClient.post<AuthResponse>(url, {}, { withCredentials: true })
+        return this._httpClient.delete<AuthResponse>(url, {})
     }
 
     refresh():Observable<AuthResponse>{
