@@ -33,5 +33,13 @@ namespace Backend.Controllers
                 return BadRequest(repoResponse);
             }
         }
+        [Authorize]
+        [HttpGet("user")]
+        public async Task<ActionResult<List<RepoDto>>> GetUserRepos()
+        {
+            var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            List<RepoDto> repoDtos = await _repoService.GetUserRepos(userId);
+            return Ok(repoDtos);
+        }
     }
 }

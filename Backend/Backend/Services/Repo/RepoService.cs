@@ -37,5 +37,10 @@ namespace Backend.Services.Repository
 
             return response;
         }
+
+        public async Task<List<RepoDto>> GetUserRepos(Guid userId)
+        {
+            return await _repoRepository.GetUserRepos(userId);
+        }
     }
 }
