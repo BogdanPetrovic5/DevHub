@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { AppNavbar } from '../../../shared/components/app-navbar/app-navbar';
+import { RepoDetailDto } from '../../../core/models/repo.model';
 
 @Component({
   selector: 'app-details',
@@ -7,4 +8,7 @@ import { AppNavbar } from '../../../shared/components/app-navbar/app-navbar';
   templateUrl: './details.html',
   styleUrl: './details.scss',
 })
-export class Details {}
+export class Details {
+  public repo = signal<RepoDetailDto | null>(null); //for now
+
+}

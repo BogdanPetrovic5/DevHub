@@ -16,3 +16,37 @@ export interface RepoDto {
     isPrivate: boolean,
     createdAt: string
 }
+
+export interface RepoLanguageDto {
+    language: string,
+    fileCount: number,
+    percentage: number
+}
+
+export interface RepoCommitSummaryDto {
+    id: string,
+    message: string,
+    authorUsername: string,
+    createdAt: string,
+    shortHash: string
+}
+
+export interface TreeItemDto {
+    name: string,
+    path: string,
+    type: 'tree' | 'blob',
+    lastCommitMessage: string,
+    lastCommitAt: string
+}
+
+export interface RepoDetailDto {
+    id: string,
+    name: string,
+    description: string | null,
+    isPrivate: boolean,
+    createdAt: string,
+    ownerUsername: string,
+    languages: RepoLanguageDto[],
+    latestCommit: RepoCommitSummaryDto | null,
+    tree: TreeItemDto[]
+}
