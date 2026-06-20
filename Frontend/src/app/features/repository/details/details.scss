@@ -340,6 +340,72 @@
   &__pct  { color: rgba(166, 207, 213, 0.4); }
 }
 
+// ---- Empty state ----
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 32px;
+  background: var(--c2);
+  border: 1px solid rgba(166, 207, 213, 0.08);
+  border-radius: 10px;
+  gap: 16px;
+  text-align: center;
+
+  &__icon {
+    color: rgba(166, 207, 213, 0.2);
+  }
+
+  &__title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--c5);
+  }
+
+  &__sub {
+    font-size: 0.85rem;
+    color: rgba(166, 207, 213, 0.45);
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  &__or {
+    font-size: 0.82rem;
+    color: rgba(166, 207, 213, 0.3);
+  }
+
+  &__cli {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  &__cli-label {
+    font-size: 0.78rem;
+    color: rgba(166, 207, 213, 0.4);
+  }
+
+  &__cmd {
+    background: rgba(166, 207, 213, 0.06);
+    border: 1px solid rgba(166, 207, 213, 0.12);
+    border-radius: 6px;
+    padding: 8px 14px;
+    font-size: 0.84rem;
+    font-family: monospace;
+    color: var(--c4);
+    letter-spacing: 0.02em;
+  }
+}
+
 // ---- Buttons ----
 .btn {
   display: flex;
