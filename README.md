@@ -1,5 +1,6 @@
 
 # DevHub
+> UI design generated with AI assistance, implemented and customized manually.
 
 A GitHub-inspired developer platform built with Angular 17+ and .NET 10.
 
@@ -202,18 +203,22 @@ cd Backend
 dotnet restore
 dotnet ef database update
 dotnet run
-Frontend
-
-
+```
+**Frontend**
+```bash
 cd Frontend
 npm install
 ng serve
+```
+
 Frontend runs on http://localhost:4200, backend on https://localhost:7081.
 
-Environment
-Create Frontend/src/environments/environment.ts:
+## Environment
 
+Create `Frontend/src/environments/environment.ts`:
 
+```typescript
 export const environment = {
   apiUrl: 'https://localhost:7081'
 };
+```
