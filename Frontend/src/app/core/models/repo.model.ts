@@ -14,7 +14,8 @@ export interface RepoDto {
     name: string,
     description: string | null,
     isPrivate: boolean,
-    createdAt: string
+    createdAt: string,
+    ownerUsername: string
 }
 
 export interface RepoLanguageDto {
