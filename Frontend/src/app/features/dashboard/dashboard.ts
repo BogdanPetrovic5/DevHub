@@ -19,7 +19,7 @@ export class Dashboard implements OnInit{
     this._repoService.getUserRepos().subscribe({
       next:response=>{
         this.repos.set(response);
-        console.log(this.repos)
+        console.log(this.repos())
       }
     })
   }

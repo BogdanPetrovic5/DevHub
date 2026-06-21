@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Service } from '@angular/core';
 import { Observable } from 'rxjs';
-import { CreateRepoRequest, RepoDto, RepoResponse } from '../../models/repo.model';
+import { CreateRepoRequest, RepoDetailDto, RepoDto, RepoResponse } from '../../models/repo.model';
 import { environment } from '../../../../environments/environment';
 
 @Service()
@@ -16,5 +16,11 @@ export class RepoService {
     getUserRepos(): Observable<RepoDto[]> {
         const url = `${environment.apiUrl}/api/repo/user`
         return this._httpClient.get<RepoDto[]>(url, { withCredentials: true })
+    }
+
+    getRepo(username: string, repoName: string, path: string = ''):Observable<RepoDetailDto>{
+        const url = `${environment.apiUrl}/api/repo/${username}/${repoName}`;
+
+        return this._httpClient.get<RepoDetailDto>(url, {params:{path}, withCredentials:true} );
     }
 }

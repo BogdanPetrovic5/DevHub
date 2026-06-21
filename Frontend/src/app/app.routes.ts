@@ -12,5 +12,5 @@ export const routes: Routes = [
   { path: 'auth', component: Authentication, canActivate: [authGuard] },
   { path: 'dashboard', component: Dashboard, canActivate: [dashboardGuard] },
   { path: 'repository/new', component: New, canActivate: [dashboardGuard] },
-  { path: 'repository/:name', component: Details, canActivate: [dashboardGuard] },
+  { path: 'repository/:username/:repoName', component: Details, canActivate: [dashboardGuard] },
 ];
