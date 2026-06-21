@@ -19,6 +19,7 @@ builder.Services.AddScoped<IPasswordEncoder, PasswordEncoder>();
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<ICookieService, CookieService>();
 
+builder.Services.AddMemoryCache();
 builder.Services.AddScoped<IRepoService, RepoService>();
 builder.Services.AddScoped<IRepoRepository, RepoRepository>();
 // Add services to the container.

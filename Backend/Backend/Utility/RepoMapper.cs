@@ -1,4 +1,4 @@
-﻿using Backend.Dto;
+﻿using Backend.Dto.Repository;
 using Backend.Models.Repository;
 
 namespace Backend.Utility
@@ -12,7 +12,8 @@ namespace Backend.Utility
             Name = repo.Name,
             Description = repo.Description,
             IsPrivate = repo.IsPrivate,
-            CreatedAt = repo.CreatedAt
+            CreatedAt = repo.CreatedAt,
+            OwnerUsername = repo.User.Username
         };
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Backend.Dto;
+using Backend.Dto.Repository;
 using Backend.Interfaces.Repository;
 using Backend.Responses;
 using Microsoft.AspNetCore.Authorization;
@@ -40,6 +41,26 @@ namespace Backend.Controllers
             var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
             List<RepoDto> repoDtos = await _repoService.GetUserRepos(userId);
             return Ok(repoDtos);
+        }
+
+        //[Authorize]
+        //[HttpPost("{name}/upload")]
+        //public async Task<IActionResult> Upload(string name, [FromForm] IFormFile formFile)
+        //{
+        //    var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        //}
+
+
+        [HttpGet("{username}/{repoName}")]
+        public async Task<ActionResult<RepoDetailsDto>> GetRepo(string username, string repoName, [FromQuery] string path = "")
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            Guid? userId = userIdClaim != null ? Guid.Parse(userIdClaim.Value) : null;
+
+            var repoDto = await _repoService.GetRepo(username, repoName, userId, path);
+
+            if (repoDto == null) return NotFound();
+            return Ok(repoDto);
         }
     }
 }

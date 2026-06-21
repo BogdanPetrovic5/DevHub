@@ -1,4 +1,5 @@
-﻿using Backend.Dto;
+﻿using Backend.Dto.Repository;
+using Backend.Models.Commit;
 using Backend.Models.Repository;
 using Backend.Responses;
 
@@ -8,5 +9,8 @@ namespace Backend.Interfaces.Repository
     {
         Task<RepoResponse> Create(Repo repository);
         Task<List<RepoDto>> GetUserRepos(Guid userId);
+        Task<Repo?> GetByUsernameAndName(string username, string repoName);
+        Task<List<RepoFile>> GetFiles(Guid repoId);
+        Task<RepoCommit?> GetLatestCommit(Guid repoId);
     }
 }
