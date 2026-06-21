@@ -19,7 +19,7 @@ export class Details implements OnInit{
       const repoName = this._route.snapshot.paramMap.get('repoName')!;
       const path = this._route.snapshot.queryParamMap.get('path') ?? '';
 
-      this._repoService.getRepo(username, repoName, path).subscribe({
+      this._repoService.getDetails(username, repoName, path).subscribe({
         next: response => {
           console.log(response)
           this.repo.set(response)

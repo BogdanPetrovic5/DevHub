@@ -18,7 +18,7 @@ export class RepoService {
         return this._httpClient.get<RepoDto[]>(url, { withCredentials: true })
     }
 
-    getRepo(username: string, repoName: string, path: string = ''):Observable<RepoDetailDto>{
+    getDetails(username: string, repoName: string, path: string = ''):Observable<RepoDetailDto>{
         const url = `${environment.apiUrl}/api/repo/${username}/${repoName}`;
 
         return this._httpClient.get<RepoDetailDto>(url, {params:{path}, withCredentials:true} );
