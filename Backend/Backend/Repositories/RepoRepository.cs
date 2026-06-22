@@ -41,6 +41,13 @@ namespace Backend.Repositories
 
         }
 
+        public Task<Repo?> GetByIdAndOwner(Guid repoId, Guid userId)
+        {
+            return _context.Repositories.Include(r => r.User)
+               .Where(r => r.User.Id == userId && r.Id == repoId)
+               .FirstOrDefaultAsync();
+        }
+
         public Task<Repo?> GetByUsernameAndName(string username, string repoName)
         {
             return _context.Repositories.Include(r => r.User)
@@ -54,6 +61,15 @@ namespace Backend.Repositories
             return _context.RepoFiles
                 .Where(f => f.RepositoryId == repoId)
                 .ToListAsync(); 
+        }
+
+        public Task<List<RepoCommitFile>> GetCommitFiles(Guid repoId)
+        {
+            return _context.RepoCommitFiles
+                .Include(cf => cf.Commit)
+                .Where(cf => cf.Commit.RepositoryId == repoId)
+                .OrderByDescending(cf => cf.Commit.CreatedAt)
+                .ToListAsync();
         }
 
         public Task<RepoCommit?> GetLatestCommit(Guid repoId)
@@ -77,6 +93,19 @@ namespace Backend.Repositories
             return repos.Select(r => r.ToDto()).ToList();
 
 
+        }
+
+        public async Task SaveUpload(List<RepoFile> files, RepoCommit commit, List<RepoCommitFile> commitFiles)
+        {
+            await _context.RepoFiles.AddRangeAsync(files);
+            await _context.RepoCommits.AddAsync(commit);
+            await _context.SaveChangesAsync();
+
+            foreach (var cf in commitFiles)
+                cf.CommitId = commit.Id;
+
+            await _context.RepoCommitFiles.AddRangeAsync(commitFiles);
+            await _context.SaveChangesAsync();
         }
     }
 }

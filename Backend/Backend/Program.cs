@@ -76,6 +76,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.Use(async (context, next) =>
+{
+    context.Response.Headers.Append("X-Frame-Options", "DENY");
+    context.Response.Headers.Append("Content-Security-Policy", "frame-ancestors 'none'");
+    await next();
+});
+
 app.UseHttpsRedirection();
 app.UseCors();
 app.UseAuthentication();

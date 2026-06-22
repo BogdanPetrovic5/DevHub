@@ -9,5 +9,6 @@ namespace Backend.Interfaces.Repository
         Task<RepoResponse> Create(CreateRepoDto createRepoDto, Guid userId);
         Task<List<RepoDto>> GetUserRepos(Guid userId);
         Task<RepoDetailsDto?> GetRepo(string username, string repoName, Guid? userId, string path);
+        Task<RepoResponse> Upload(Guid repoId,Guid userId, RepoUploadRequest uploadRequest);
     }
 }
