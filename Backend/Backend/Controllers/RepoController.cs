@@ -14,9 +14,11 @@ namespace Backend.Controllers
     public class RepoController : ControllerBase
     {
         private readonly IRepoService _repoService;
-        public RepoController(IRepoService repoService)
+        private readonly ILogger<RepoController> _logger;
+        public RepoController(IRepoService repoService, ILogger<RepoController> logger)
         {
             _repoService = repoService;
+            _logger = logger;
         }
         [Authorize]
         [HttpPost("new")]
@@ -43,17 +45,30 @@ namespace Backend.Controllers
             return Ok(repoDtos);
         }
 
-        //[Authorize]
-        //[HttpPost("{name}/upload")]
-        //public async Task<IActionResult> Upload(string name, [FromForm] IFormFile formFile)
-        //{
-        //    var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
-        //}
+        [Authorize]
+        [HttpPost("{repoId}/upload")]
+        public async Task<ActionResult<RepoResponse>> Upload(Guid repoId, [FromForm]RepoUploadRequest uploadRequest)
+        {
+            _logger.LogInformation("Upload called");
+   
+            var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            RepoResponse result = await _repoService.Upload(repoId, userId, uploadRequest);
+            if(result.Success)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return BadRequest(result);
+            }
+            
+        }
 
 
         [HttpGet("{username}/{repoName}")]
         public async Task<ActionResult<RepoDetailsDto>> GetRepo(string username, string repoName, [FromQuery] string path = "")
         {
+            _logger.LogInformation("GetDetails called");
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
             Guid? userId = userIdClaim != null ? Guid.Parse(userIdClaim.Value) : null;
 

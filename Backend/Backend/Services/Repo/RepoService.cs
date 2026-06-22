@@ -1,3 +1,4 @@
+using Azure.Core;
 using Backend.Dto;
 using Backend.Dto.Repository;
 using Backend.Interfaces.Repository;
@@ -5,7 +6,9 @@ using Backend.Models.Commit;
 using Backend.Models.Repository;
 using Backend.Responses;
 using Backend.Utility;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
+using System.Security.Cryptography;
 
 namespace Backend.Services.Repository
 {
@@ -62,7 +65,8 @@ namespace Backend.Services.Repository
             });
 
             var latestCommit = await _repoRepository.GetLatestCommit(repo.Id);
-            var tree = BuildTree(files!, currentPath);
+            var commitFiles = await _repoRepository.GetCommitFiles(repo.Id);
+            var tree = BuildTree(files!, commitFiles, currentPath);
             var languages = BuildLanguages(files!);
 
             return repo.ToDetailsDto(tree, languages, latestCommit?.ToSummaryDto(), currentPath);
@@ -73,23 +77,39 @@ namespace Backend.Services.Repository
             return await _repoRepository.GetUserRepos(userId);
         }
 
-        private List<TreeItemDto> BuildTree(List<RepoFile> files, string currentPath = "")
+        private List<TreeItemDto> BuildTree(List<RepoFile> files, List<RepoCommitFile> commitFiles, string currentPath = "")
         {
-            var relevatFiles = string.IsNullOrEmpty(currentPath) 
-                ? files 
+            var relevantFiles = string.IsNullOrEmpty(currentPath)
+                ? files
                 : files.Where(f => f.Path.StartsWith(currentPath + "/")).ToList();
 
-            var relativePaths = relevatFiles.Select(rv => string.IsNullOrEmpty(currentPath) ? rv.Path : rv.Path[(currentPath.Length + 1)..]).ToList();
-
-            return relativePaths.GroupBy(p => p.Split('/')[0])
-                .Select(g => new TreeItemDto
-                {
-                    Name = g.Key,
-                    Path = string.IsNullOrEmpty(currentPath) ? g.Key : $"{currentPath}/{g.Key}",
-                    Type = g.Any(p => p.Contains("/")) ? "tree" : "blob"
-                })
+            var relativePaths = relevantFiles
+                .Select(rv => string.IsNullOrEmpty(currentPath) ? rv.Path : rv.Path[(currentPath.Length + 1)..])
                 .ToList();
 
+            return relativePaths.GroupBy(p => p.Split('/')[0])
+                .Select(g =>
+                {
+                    var name = g.Key;
+                    var fullPath = string.IsNullOrEmpty(currentPath) ? name : $"{currentPath}/{name}";
+                    var isFolder = g.Any(p => p.Contains("/"));
+
+                    var latestCf = isFolder
+                        ? commitFiles.FirstOrDefault(cf => cf.Path.StartsWith(fullPath + "/"))
+                        : commitFiles.FirstOrDefault(cf => cf.Path == fullPath);
+
+                    return new TreeItemDto
+                    {
+                        Name = name,
+                        Path = fullPath,
+                        Type = isFolder ? "tree" : "blob",
+                        LastCommitMessage = latestCf?.Commit?.Message ?? "",
+                        LastCommitAt = latestCf?.Commit?.CreatedAt ?? default
+                    };
+                })
+                .OrderBy(p => p.Type == "tree" ? 0 : 1)
+                .ThenBy(p => p.Name)
+                .ToList();
         }
 
 
@@ -129,6 +149,93 @@ namespace Backend.Services.Repository
                     Percentage = Math.Round((double)c.Count / total * 100, 1)
                 })
                 .ToList();
+        }
+
+        public async Task<RepoResponse> Upload(Guid repoId, Guid userId, RepoUploadRequest uploadRequest)
+        {
+           var repo = await _repoRepository.GetByIdAndOwner(repoId, userId);
+            if (repo == null)
+            {
+                return new RepoResponse
+                {
+                    Success = false,
+                    Message = "Repository not found."
+                };
+            }
+            if (!uploadRequest.File.FileName.EndsWith(".zip"))
+                return new RepoResponse { Success = false, Message = "Only .zip files are allowed" };
+
+            if (repo.UserId != userId)
+            {
+                return new RepoResponse
+                {
+                    Success = false,
+                    Message = "You do not have permission to upload to this repository."
+                };
+            }
+
+            using var stream = uploadRequest.File.OpenReadStream();
+            using var zip = new System.IO.Compression.ZipArchive(stream, System.IO.Compression.ZipArchiveMode.Read);
+
+            var files = new List<RepoFile>();
+            foreach (var entry in zip.Entries) { 
+                if (string.IsNullOrEmpty(entry.Name)) continue;
+                var segments = entry.FullName.Split('/');
+                if (segments.Any(s => s == ".git" || s == "node_modules"))
+                    continue;
+                var ext = System.IO.Path.GetExtension(entry.Name).ToLower();
+                if (_blockedExtensions.Contains(ext))
+                    return new RepoResponse { Success = false, Message = $"File type {ext} is not allowed" };
+                using var reader = new StreamReader(entry.Open());
+                var content = await reader.ReadToEndAsync();
+                var hash = ComputeHash(content);
+
+                files.Add(new RepoFile
+                {
+                    Content = content,
+                    Hash = hash,
+                    Path = entry.FullName,
+                    RepositoryId = repoId
+
+                });
+
+            
+
+            }
+            var commit = new RepoCommit
+            {
+                Message = uploadRequest.Message,
+                RepositoryId = repoId,
+                UserId = userId,
+                CreatedAt = DateTime.Now
+            };
+            var commitFiles = files.Select(f => new RepoCommitFile
+            {
+                Path = f.Path,
+                Content = f.Content,
+                ChangeType = "Added",
+            }).ToList();
+            try
+            {
+                await _repoRepository.SaveUpload(files, commit, commitFiles);
+                _cache.Remove($"repo-files-{repoId}");
+                return new RepoResponse { Success = true, Message = "Upload successful" };
+            }
+            catch (DbUpdateException)
+            {
+                return new RepoResponse { Success = false, Message = "Failed to save upload." };
+            }
+        }
+
+        private static readonly HashSet<string> _blockedExtensions = new()
+        {
+            ".exe", ".dll", ".bat", ".cmd", ".sh", ".ps1", ".vbs", ".msi", ".com", ".scr"
+        };
+
+        private string ComputeHash(string content)
+        {
+            var bytes = SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(content));
+            return Convert.ToHexString(bytes).ToLower();
         }
     }
 }
