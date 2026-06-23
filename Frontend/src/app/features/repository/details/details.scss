@@ -229,7 +229,9 @@
     color: var(--c4);
     text-decoration: none;
     font-weight: 500;
+    cursor: pointer;
     &:hover { text-decoration: underline; }
+
   }
 
   &__commit-msg {
@@ -406,6 +408,63 @@
   }
 }
 
+// ---- Commit modal ----
+.commit-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.commit-modal {
+  background: var(--c2);
+  border: 1px solid rgba(166, 207, 213, 0.12);
+  border-radius: 12px;
+  padding: 24px;
+  width: 100%;
+  max-width: 460px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+
+  &__title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--c5);
+  }
+
+  &__label {
+    font-size: 0.82rem;
+    color: rgba(166, 207, 213, 0.5);
+    margin-bottom: -6px;
+  }
+
+  &__input {
+    background: rgba(166, 207, 213, 0.05);
+    border: 1px solid rgba(166, 207, 213, 0.15);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 0.88rem;
+    color: var(--c5);
+    outline: none;
+    width: 100%;
+    box-sizing: border-box;
+
+    &:focus { border-color: var(--c4); }
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 4px;
+  }
+}
+
 // ---- Buttons ----
 .btn {
   display: flex;
@@ -422,6 +481,14 @@
     color: rgba(166, 207, 213, 0.6);
     border: 1px solid rgba(166, 207, 213, 0.15);
     &:hover { background: rgba(166, 207, 213, 0.05); color: var(--c5); }
+  }
+
+  &--primary {
+    background: var(--c4);
+    color: var(--c1);
+    border: 1px solid transparent;
+    &:hover { opacity: 0.9; }
+    &:disabled { opacity: 0.5; cursor: not-allowed; }
   }
 
   &--sm { padding: 6px 12px; font-size: 0.82rem; }
