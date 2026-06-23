@@ -21,6 +21,12 @@ export class RepoService {
     getDetails(username: string, repoName: string, path: string = ''):Observable<RepoDetailDto>{
         const url = `${environment.apiUrl}/api/repo/${username}/${repoName}`;
 
-        return this._httpClient.get<RepoDetailDto>(url, {params:{path}, withCredentials:true} );
+        return this._httpClient.get<RepoDetailDto>(url, { params: { path }, withCredentials: true, headers: { 'Cache-Control': 'no-cache' } });
+    }
+
+    upload(data:FormData, repoId:string):Observable<RepoResponse>{
+        const url = `${environment.apiUrl}/api/repo/${repoId}/upload`
+
+        return this._httpClient.post<RepoResponse>(url, data, { withCredentials: true });
     }
 }
