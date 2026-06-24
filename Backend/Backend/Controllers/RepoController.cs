@@ -1,6 +1,7 @@
 ﻿using Backend.Dto;
 using Backend.Dto.Repository;
 using Backend.Interfaces.Repository;
+using Backend.Models.Repository;
 using Backend.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -64,7 +65,7 @@ namespace Backend.Controllers
             
         }
 
-
+        [AllowAnonymous]
         [HttpGet("{username}/{repoName}")]
         public async Task<ActionResult<RepoDetailsDto>> GetRepo(string username, string repoName, [FromQuery] string path = "")
         {
@@ -76,6 +77,24 @@ namespace Backend.Controllers
 
             if (repoDto == null) return NotFound();
             return Ok(repoDto);
+        }
+        [AllowAnonymous]
+        [HttpGet("{username}/{repoName}/blob")]
+        public async Task<ActionResult<RepoFileContentDto>> ViewFile(string username, string reponame, [FromQuery] string path)
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            Guid? userId = userIdClaim != null ? Guid.Parse(userIdClaim.Value) : null;
+            RepoDetailsDto? repo = await _repoService.GetRepo(username, reponame, userId, path);
+
+            if (repo == null) return NotFound();
+
+            if (repo.IsPrivate && userId != repo.OwnerId) return Forbid();
+
+            RepoFileContentDto? fileContent = await _repoService.GetFileContent(repo.Id,path);
+
+            if (fileContent == null) return NotFound();
+            return Ok(fileContent);
+               
         }
     }
 }

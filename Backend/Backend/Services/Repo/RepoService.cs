@@ -237,5 +237,22 @@ namespace Backend.Services.Repository
             var bytes = SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(content));
             return Convert.ToHexString(bytes).ToLower();
         }
+
+        public async Task<RepoFileContentDto?> GetFileContent(Guid repoId, string path)
+        {
+            RepoFile? repoFile = await _repoRepository.GetFileContent(repoId, path);
+            if (repoFile == null)
+            {
+                return null;
+            }
+            var ext = System.IO.Path.GetExtension(repoFile.Path).ToLower();
+            RepoFileContentDto fileContent = new RepoFileContentDto
+            {
+                Path = repoFile.Path,
+                Content = repoFile.Content,
+                Language = _extensionToLanguage.TryGetValue(ext, out var lang) ? lang : "plaintext"
+            };
+            return fileContent;
+        }
     }
 }
