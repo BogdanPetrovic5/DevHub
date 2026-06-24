@@ -107,5 +107,10 @@ namespace Backend.Repositories
             await _context.RepoCommitFiles.AddRangeAsync(commitFiles);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<RepoFile?> GetFileContent(Guid repoId, string path)
+        {
+            return await _context.RepoFiles.Where(rf => rf.RepositoryId == repoId && rf.Path == path).FirstOrDefaultAsync();
+        }
     }
 }
