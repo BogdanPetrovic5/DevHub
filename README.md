@@ -25,21 +25,30 @@ A GitHub-inspired developer platform built with Angular 17+ and .NET 10.
 - JWT access token (15min) + refresh token (7 days) stored in HttpOnly cookies
 - Dashboard with sidebar, repository list, stats, and activity feed
 - Shared navbar with responsive drawer on mobile
+- Repository creation and file upload via ZIP
+- Repository file tree browser with folder navigation and last commit messages
+- File viewer (blob) with line numbers and language detection
+- Clickjacking protection (X-Frame-Options + CSP)
 
-## API Endpoints ( for now )
+## API Endpoints
 
 | Method | Endpoint | Auth | Description |
 |--------|----------|------|-------------|
 | POST | /api/auth/register | No | Register new user, sets auth cookies |
 | POST | /api/auth/login | No | Login, sets auth cookies |
-| POST | /api/auth/refresh | No | Refreshes access token via HttpOnly cookie. Returns 401 if token is missing or invalid |
+| POST | /api/auth/refresh | No | Refreshes access token via HttpOnly cookie |
 | DELETE | /api/auth/logout | No | Logout, clears auth cookies and revokes refresh token |
-| POST | /api/repo/new | ✅ | Create a new repository |
-| GET | /api/repo/user | ✅ | Get all repositories for the authenticated user |
+| POST | /api/repo/new | 🔒 | Create a new repository |
+| GET | /api/repo/user | 🔒 | Get all repositories for the authenticated user |
+| POST | /api/repo/{repoId}/upload | 🔒 | Upload a ZIP file as a new commit |
+| GET | /api/repo/{username}/{repoName} | Public* | Get repository details and file tree |
+| GET | /api/repo/{username}/{repoName}/blob | Public* | Get file content |
+
+> \* Public repos are accessible without authentication. Private repos require the owner's token.
 
 # DevHub API
 
-Base URL: `https://localhost:7081/api`
+Base URL: `http://localhost:5207/api`
 
 Auth: JWT via HttpOnly cookie (`accessToken`). Protected endpoints require a valid token.
 
@@ -170,15 +179,78 @@ Get all repositories for the authenticated user.
 
 ---
 
-> 🔒 — requires valid `accessToken` cookie
+### POST /api/repo/{repoId}/upload 🔒
+Upload a ZIP file as a new commit. Extracts files, ignores `.git` and `node_modules`.
+
+**Form Data**
+- `File` — `.zip` file
+- `Message` — commit message string
+
+**Response `200 OK`**
+```json
+{ "success": true, "message": "..." }
+```
+
+---
+
+### GET /api/repo/{username}/{repoName} `Public*`
+Get repository details and file tree for the given path.
+
+**Query Params**
+- `path` (optional) — folder path to browse, defaults to root
+
+**Response `200 OK`**
+```json
+{
+  "id": "guid",
+  "name": "string",
+  "ownerUsername": "string",
+  "ownerId": "guid",
+  "isPrivate": false,
+  "tree": [
+    {
+      "name": "string",
+      "path": "string",
+      "type": "tree | blob",
+      "lastCommitMessage": "string"
+    }
+  ]
+}
+```
+
+---
+
+### GET /api/repo/{username}/{repoName}/blob `Public*`
+Get file content for the blob viewer.
+
+**Query Params**
+- `path` — full file path (e.g. `src/app/app.ts`)
+
+**Response `200 OK`**
+```json
+{
+  "path": "string",
+  "content": "string",
+  "language": "typescript | csharp | plaintext | ..."
+}
+```
+
+**Response `404 Not Found`** — file or repo not found  
+**Response `403 Forbidden`** — private repo, not the owner
+
+---
+
+> 🔒 — requires valid `accessToken` cookie  
+> \* — public repos accessible without auth; private repos require owner token
+
 ## Project Structure
 
 ```
 DevHub/
 ├── Frontend/          # Angular 17+ app
 │   └── src/app/
-│       ├── core/      # services, models
-│       ├── features/  # landing, authentication, dashboard
+│       ├── core/      # services, models, guards
+│       ├── features/  # landing, auth, dashboard, repository
 │       └── shared/    # reusable components (navbar)
 ├── Backend/           # .NET 10 Web API
     ├── Controllers/
@@ -194,7 +266,6 @@ DevHub/
     └── Utility/
 ```
 
-
 ## Getting Started
 
 **Backend**
@@ -204,6 +275,7 @@ dotnet restore
 dotnet ef database update
 dotnet run
 ```
+
 **Frontend**
 ```bash
 cd Frontend
@@ -211,7 +283,7 @@ npm install
 ng serve
 ```
 
-Frontend runs on http://localhost:4200, backend on https://localhost:7081.
+Frontend runs on http://localhost:4200, backend on http://localhost:5207.
 
 ## Environment
 
@@ -219,6 +291,6 @@ Create `Frontend/src/environments/environment.ts`:
 
 ```typescript
 export const environment = {
-  apiUrl: 'https://localhost:7081'
+  apiUrl: 'http://localhost:5207'
 };
 ```
