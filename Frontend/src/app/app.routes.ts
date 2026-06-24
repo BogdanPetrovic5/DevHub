@@ -6,6 +6,7 @@ import { New } from './features/repository/new/new';
 import { Details } from './features/repository/details/details';
 import { dashboardGuard } from './core/guards/dashboard-guard';
 import { authGuard } from './core/guards/auth-guard';
+import { Blob } from './features/repository/blob/blob';
 
 export const routes: Routes = [
   { path: '', component: Landing },
@@ -13,4 +14,5 @@ export const routes: Routes = [
   { path: 'dashboard', component: Dashboard, canActivate: [dashboardGuard] },
   { path: 'repository/new', component: New, canActivate: [dashboardGuard] },
   { path: 'repository/:username/:repoName', component: Details, canActivate: [dashboardGuard] },
+  {path:'repository/:username/:repoName/blob', component:Blob, canActivate:[dashboardGuard]}
 ];

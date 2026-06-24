@@ -137,7 +137,7 @@
                   <polyline points="14 2 14 8 20 8"/>
                 </svg>
               }
-              <a class="file-tree__name" (click)="loadMore(item.path)">{{item.name}}</a>
+              <a class="file-tree__name" (click)="item.type === 'tree' ? loadMore(item.path) : viewFile(item.path)">{{item.name}}</a>
               <span class="file-tree__commit-msg">feat: {{item.lastCommitMessage}}</span>
               <span class="file-tree__time">3 days ago</span>
             </div>

@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Service } from '@angular/core';
 import { Observable } from 'rxjs';
-import { CreateRepoRequest, RepoDetailDto, RepoDto, RepoResponse } from '../../models/repo.model';
+import { CreateRepoRequest, RepoDetailDto, RepoDto, RepoFileContentDto, RepoResponse } from '../../models/repo.model';
 import { environment } from '../../../../environments/environment';
 
 @Service()
@@ -28,5 +28,10 @@ export class RepoService {
         const url = `${environment.apiUrl}/api/repo/${repoId}/upload`
 
         return this._httpClient.post<RepoResponse>(url, data, { withCredentials: true });
+    }
+
+    viewFile(username:string, repoName:string, path:string):Observable<RepoFileContentDto>{
+        const url = `${environment.apiUrl}/api/repo/${username}/${repoName}/blob?path=${path}`
+        return this._httpClient.get<RepoFileContentDto>(url, {withCredentials:true});
     }
 }

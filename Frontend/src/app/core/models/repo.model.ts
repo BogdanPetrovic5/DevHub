@@ -51,3 +51,8 @@ export interface RepoDetailDto {
     latestCommit: RepoCommitSummaryDto | null,
     tree: TreeItemDto[]
 }
+export interface RepoFileContentDto {
+  path: string;
+  content: string;
+  language: string;
+}
