@@ -1,0 +1,46 @@
+<app-app-navbar />
+
+<div class="blob-page">
+
+  <div class="blob-header">
+    <div class="blob-header__inner">
+      <div class="blob-header__breadcrumb">
+        <a class="blob-header__link" (click)="goBack()">{{ repoName() }}</a>
+        @for (segment of pathSegments(); track $index) {
+          <span class="blob-header__sep">/</span>
+          @if ($last) {
+            <span class="blob-header__current">{{ segment }}</span>
+          } @else {
+            <a class="blob-header__link" (click)="navigateToSegment($index)">{{ segment }}</a>
+          }
+        }
+      </div>
+    </div>
+  </div>
+
+  <div class="blob-content">
+    <div class="blob-content__inner">
+
+      @if (file()) {
+        <div class="blob-box">
+          <div class="blob-box__header">
+            <span class="blob-box__lang">{{ file()!.language }}</span>
+            <span class="blob-box__lines">{{ lineCount() }} lines</span>
+          </div>
+          <div class="blob-box__body">
+            <div class="blob-box__gutter">
+              @for (n of lineNumbers(); track n) {
+                <span class="blob-box__line-num">{{ n }}</span>
+              }
+            </div>
+            <pre class="blob-box__code"><code>{{ file()!.content }}</code></pre>
+          </div>
+        </div>
+      } @else {
+        <div class="blob-loading">Loading...</div>
+      }
+
+    </div>
+  </div>
+
+</div>

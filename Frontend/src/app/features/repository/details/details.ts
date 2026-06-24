@@ -65,7 +65,12 @@ export class Details implements OnInit {
       });
     });
   }
-
+  viewFile(path:string){
+    this._router.navigate([
+      'repository', this.repo()!.ownerUsername, this.repo()!.name, 'blob'],
+      {queryParams:{path}}
+    )
+  }
   loadMore(path: string): void {
     this._router.navigate([], {
       relativeTo: this._route,

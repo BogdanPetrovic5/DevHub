@@ -1,0 +1,126 @@
+.blob-page {
+  min-height: calc(100vh - 56px);
+  background: var(--c1);
+}
+
+// ---- Header ----
+.blob-header {
+  background: var(--c2);
+  border-bottom: 1px solid rgba(166, 207, 213, 0.08);
+
+  &__inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 16px 32px;
+  }
+
+  &__breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.9rem;
+    flex-wrap: wrap;
+  }
+
+  &__link {
+    color: var(--c4);
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: 600;
+    &:hover { text-decoration: underline; }
+  }
+
+  &__sep {
+    color: rgba(166, 207, 213, 0.3);
+  }
+
+  &__current {
+    color: var(--c5);
+    font-weight: 600;
+  }
+}
+
+// ---- Content ----
+.blob-content {
+  &__inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 24px 32px;
+  }
+}
+
+// ---- Blob box ----
+.blob-box {
+  background: var(--c2);
+  border: 1px solid rgba(166, 207, 213, 0.08);
+  border-radius: 10px;
+  overflow: hidden;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    border-bottom: 1px solid rgba(166, 207, 213, 0.08);
+    background: rgba(166, 207, 213, 0.03);
+  }
+
+  &__lang {
+    font-size: 0.8rem;
+    color: var(--c4);
+    font-weight: 600;
+    background: rgba(166, 207, 213, 0.08);
+    padding: 2px 10px;
+    border-radius: 99px;
+  }
+
+  &__lines {
+    font-size: 0.78rem;
+    color: rgba(166, 207, 213, 0.35);
+  }
+
+  &__body {
+    display: flex;
+    overflow-x: auto;
+    align-items: stretch;
+  }
+
+  &__gutter {
+    display: flex;
+    flex-direction: column;
+    // gap: 1.55px;
+    padding: 16px 12px;
+    background: rgba(166, 207, 213, 0.02);
+    border-right: 1px solid rgba(166, 207, 213, 0.06);
+    min-width: 48px;
+    font-size: 0.84rem;
+    text-align: right;
+    user-select: none;
+    align-self: stretch;
+  }
+
+  &__line-num {
+    font-family: monospace;
+    color: rgba(166, 207, 213, 0.2);
+    line-height: 1.6;
+  }
+
+  &__code {
+    margin: 0;
+    padding: 16px;
+    font-size: 0.84rem;
+    font-family: monospace;
+    line-height: 1.6;
+    color: var(--c5);
+    white-space: pre;
+    flex: 1;
+  }
+}
+
+// ---- Loading ----
+.blob-loading {
+  text-align: center;
+  padding: 64px;
+  color: rgba(166, 207, 213, 0.3);
+  font-size: 0.85rem;
+}
