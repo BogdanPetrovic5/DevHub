@@ -32,10 +32,15 @@
     <div class="repo-header__inner">
       <div class="repo-header__top">
         <div class="repo-header__breadcrumb">
-          <a href="#" class="repo-header__owner">bogdanpetrovic</a>
+          <a href="#" class="repo-header__owner">{{repo()?.ownerUsername}}</a>
           <span class="repo-header__sep">/</span>
-          <span class="repo-header__name">DevHub</span>
-          <span class="repo-header__badge">Public</span>
+          <span class="repo-header__name">{{repoName()}}</span>
+          @if(repo()?.isPrivate) {
+            <span class="repo-header__badge">Private</span>
+          }
+          @else{
+            <span class="repo-header__badge">Public</span>
+          }
         </div>
         <div class="repo-header__actions">
           <button class="btn btn--ghost btn--sm" (click)="fileInput.click()">
@@ -49,7 +54,7 @@
         </div>
       </div>
 
-      <p class="repo-header__desc">A GitHub-like platform for developers built with Angular & .NET</p>
+      <p class="repo-header__desc">{{repo()?.description}}</p>
 
       <!-- Tabs -->
       <nav class="repo-tabs">
@@ -109,13 +114,13 @@
         <!-- Latest commit bar -->
         <div class="commit-bar">
           <div class="commit-bar__left">
-            <div class="commit-bar__avatar">B</div>
-            <span class="commit-bar__author">bogdanpetrovic</span>
-            <span class="commit-bar__msg">feat: add JWT refresh token rotation</span>
+            <div class="commit-bar__avatar">{{repo()?.ownerUsername?.[0]}}</div>
+            <span class="commit-bar__author">{{repo()?.ownerUsername}}</span>
+            <span class="commit-bar__msg">{{repo()?.latestCommit?.message}}</span>
           </div>
           <div class="commit-bar__right">
-            <span class="commit-bar__hash">a1b0521</span>
-            <span class="commit-bar__time">2 hours ago</span>
+            <span class="commit-bar__hash">{{repo()?.latestCommit?.shortHash}}</span>
+            <span class="commit-bar__time">{{repo()?.latestCommit?.createdAt | date:'MMM d, yyyy'}}</span>
           </div>
         </div>
 
@@ -138,8 +143,8 @@
                 </svg>
               }
               <a class="file-tree__name" (click)="item.type === 'tree' ? loadMore(item.path) : viewFile(item.path)">{{item.name}}</a>
-              <span class="file-tree__commit-msg">feat: {{item.lastCommitMessage}}</span>
-              <span class="file-tree__time">3 days ago</span>
+              <span class="file-tree__commit-msg">{{item.lastCommitMessage}}</span>
+              <span class="file-tree__time">{{item.lastCommitAt | timeAgo}}</span>
             </div>
           }
           
@@ -155,7 +160,7 @@
 
         <div class="sidebar-section">
           <h3 class="sidebar-section__title">About</h3>
-          <p class="sidebar-section__desc">A GitHub-like platform for developers with Angular & .NET</p>
+          <p class="sidebar-section__desc">{{repo()?.description}}</p>
           <div class="sidebar-section__meta">
             <div class="sidebar-section__meta-item">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -163,7 +168,11 @@
                 <line x1="2" y1="12" x2="22" y2="12"/>
                 <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
               </svg>
-              Public repository
+              @if(repo()?.isPrivate){
+                <span>Private repository</span>
+              }@else {
+                <span>Public repository</span>
+              }
             </div>
             <div class="sidebar-section__meta-item">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -172,34 +181,32 @@
                 <line x1="8" y1="2" x2="8" y2="6"/>
                 <line x1="3" y1="10" x2="21" y2="10"/>
               </svg>
-              Created Jun 19, 2026
+              Created {{repo()?.createdAt | date:'MMM dd, yyyy'}}
             </div>
           </div>
         </div>
 
         <div class="sidebar-section">
           <h3 class="sidebar-section__title">Languages</h3>
-          <div class="lang-bar">
-            <div class="lang-bar__fill lang-bar__fill--ts" style="width: 52%"></div>
-            <div class="lang-bar__fill lang-bar__fill--cs" style="width: 33%"></div>
-            <div class="lang-bar__fill lang-bar__fill--scss" style="width: 15%"></div>
-          </div>
+         
+            <div class="lang-bar">
+               @for (item of repoLanguagePercentageMap(); track $index) {
+                <div class="lang-bar__fill lang-bar__fill--ts" [style.background]="getLanguageColor(item.language)" [style.width]="item.percentage + '%'"></div>
+               }
+              
+            </div>
+       
+        
           <div class="lang-list">
-            <div class="lang-list__item">
-              <span class="lang-list__dot lang-list__dot--ts"></span>
-              <span class="lang-list__name">TypeScript</span>
-              <span class="lang-list__pct">52%</span>
+            @for(item of repoLanguagePercentageMap(); track $index){
+              <div class="lang-list__item" >
+              <span class="lang-list__dot lang-list__dot--ts" [style.background]="getLanguageColor(item.language)"></span>
+              <span class="lang-list__name">{{item.language}}</span>
+              <span class="lang-list__pct">{{item.percentage}}</span>
             </div>
-            <div class="lang-list__item">
-              <span class="lang-list__dot lang-list__dot--cs"></span>
-              <span class="lang-list__name">C#</span>
-              <span class="lang-list__pct">33%</span>
-            </div>
-            <div class="lang-list__item">
-              <span class="lang-list__dot lang-list__dot--scss"></span>
-              <span class="lang-list__name">SCSS</span>
-              <span class="lang-list__pct">15%</span>
-            </div>
+            }
+            
+           
           </div>
         </div>
 
