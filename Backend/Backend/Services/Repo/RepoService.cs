@@ -122,10 +122,8 @@ namespace Backend.Services.Repository
             {".c", "C" },
             { ".scss", "SCSS" },
             { ".html", "HTML" },
-            { ".json", "JSON" },
             { ".js", "JavaScript" },
             { ".css", "CSS" },
-            { ".md", "Markdown" },
         };
 
         private List<RepoLanguageDto> BuildLanguages(List<RepoFile> files)
