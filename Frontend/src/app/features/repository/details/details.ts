@@ -2,13 +2,14 @@ import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { AppNavbar } from '../../../shared/components/app-navbar/app-navbar';
-import { RepoDetailDto } from '../../../core/models/repo.model';
+import { RepoDetailDto, RepoLanguageDto } from '../../../core/models/repo.model';
 import { RepoService } from '../../../core/services/repository/repo-service';
 import { ActivatedRoute, Router } from '@angular/router';
-
+import { DatePipe, NgClass } from '@angular/common';
+import { TimeAgoPipe } from '../../../shared/pipes/time-ago-pipe';
 @Component({
   selector: 'app-details',
-  imports: [AppNavbar, FormsModule],
+  imports: [AppNavbar, FormsModule, DatePipe, TimeAgoPipe, NgClass],
   templateUrl: './details.html',
   styleUrl: './details.scss',
 })
@@ -23,7 +24,8 @@ export class Details implements OnInit {
   isUploading = signal(false);
 
   private _pendingFile: File | null = null;
-
+  public repoName = signal<string>("")
+  public repoLanguagePercentageMap = signal<RepoLanguageDto[]>([])
   onFileSelected(event: Event) {
     const file = (event.target as HTMLInputElement)?.files?.[0];
     if (!file) return;
@@ -54,14 +56,19 @@ export class Details implements OnInit {
 
   ngOnInit(): void {
     const username = this._route.snapshot.paramMap.get('username')!;
-    const repoName = this._route.snapshot.paramMap.get('repoName')!;
+    this.repoName.set( this._route.snapshot.paramMap.get('repoName')!);
 
     this._route.queryParamMap.pipe(
       takeUntilDestroyed(this._destroyRef)
     ).subscribe(params => {
       const path = params.get('path') ?? '';
-      this._repoService.getDetails(username, repoName, path).subscribe({
-        next: response => this.repo.set(response)
+      this._repoService.getDetails(username, this.repoName(), path).subscribe({
+        next:(response)=>{
+          this.repo.set(response)
+          this.repoLanguagePercentageMap.set(response.languages);
+          console.log(this.repoLanguagePercentageMap())
+        }
+        
       });
     });
   }
@@ -77,4 +84,17 @@ export class Details implements OnInit {
       queryParams: { path },
     });
   }
+  getLanguageColor(language:string){
+    return this._languageColors[language] ?? '#8b8b8b'
+  }
+  private readonly _languageColors: Record<string, string> = {
+    'TypeScript': '#3178c6',
+    'C#': '#178600',
+    'SCSS': '#c6538c',
+    'CSS': '#663399',
+    'HTML': '#e34c26',
+    'JavaScript': '#f1e05a',
+    'Markdown':'#083fa1',
+    'JSON':'#002b36'
+  };
 }
