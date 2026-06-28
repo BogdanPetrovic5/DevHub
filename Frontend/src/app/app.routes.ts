@@ -7,12 +7,22 @@ import { Details } from './features/repository/details/details';
 import { dashboardGuard } from './core/guards/dashboard-guard';
 import { authGuard } from './core/guards/auth-guard';
 import { Blob } from './features/repository/blob/blob';
+import { Commits } from './features/repository/details/commits/commits';
+import { Code } from './features/repository/details/code/code';
 
 export const routes: Routes = [
   { path: '', component: Landing },
   { path: 'auth', component: Authentication, canActivate: [authGuard] },
   { path: 'dashboard', component: Dashboard, canActivate: [dashboardGuard] },
   { path: 'repository/new', component: New, canActivate: [dashboardGuard] },
-  { path: 'repository/:username/:repoName', component: Details, canActivate: [dashboardGuard] },
-  {path:'repository/:username/:repoName/blob', component:Blob, canActivate:[dashboardGuard]}
+  {
+    path: 'repository/:username/:repoName',
+    component: Details,
+    canActivate: [dashboardGuard],
+    children: [
+      { path: '', component: Code },
+      { path: 'commits', component: Commits }
+    ]
+  },
+  { path: 'repository/:username/:repoName/blob', component: Blob, canActivate: [dashboardGuard] },
 ];

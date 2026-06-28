@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Service } from '@angular/core';
 import { Observable } from 'rxjs';
-import { CreateRepoRequest, RepoDetailDto, RepoDto, RepoFileContentDto, RepoResponse } from '../../models/repo.model';
+import { CreateRepoRequest, RepoCommitSummaryDto, RepoDetailDto, RepoDto, RepoFileContentDto, RepoResponse } from '../../models/repo.model';
 import { environment } from '../../../../environments/environment';
 
 @Service()
@@ -33,5 +33,11 @@ export class RepoService {
     viewFile(username:string, repoName:string, path:string):Observable<RepoFileContentDto>{
         const url = `${environment.apiUrl}/api/repo/${username}/${repoName}/blob?path=${path}`
         return this._httpClient.get<RepoFileContentDto>(url, {withCredentials:true});
+    }
+
+    getCommits(username:string, repoName:string):Observable<RepoCommitSummaryDto[]>{
+        const url = `${environment.apiUrl}/api/repo/${username}/${repoName}/commits`
+
+        return this._httpClient.get<RepoCommitSummaryDto[]>(url, {withCredentials:true});
     }
 }

@@ -1,0 +1,38 @@
+<div class="commits-content">
+  <div class="commits-content__inner">
+
+    @if (!commits()) {
+      <div class="commits-loading">Loading...</div>
+    } @else if (commits()!.length === 0) {
+      <div class="commits-empty">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/>
+          <circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/>
+        </svg>
+        <p>No commits yet</p>
+      </div>
+    } @else {
+      <div class="commit-list">
+        @for (commit of commits(); track commit.id) {
+          <div class="commit-item">
+            <div class="commit-item__left">
+              <div class="commit-item__avatar">{{ commit.authorUsername[0].toUpperCase() }}</div>
+              <div class="commit-item__info">
+                <span class="commit-item__msg">{{ commit.message }}</span>
+                <span class="commit-item__meta">
+                  <span class="commit-item__author">{{ commit.authorUsername }}</span>
+                  committed
+                  <span class="commit-item__time">{{ commit.createdAt | timeAgo }}</span>
+                </span>
+              </div>
+            </div>
+            <div class="commit-item__right">
+              <span class="commit-item__hash">{{ commit.id.toString().slice(0, 7) }}</span>
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+  </div>
+</div>
