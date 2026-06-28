@@ -1,6 +1,7 @@
 using Azure.Core;
 using Backend.Dto;
 using Backend.Dto.Repository;
+using Backend.Exceptions;
 using Backend.Interfaces.Repository;
 using Backend.Models.Commit;
 using Backend.Models.Repository;
@@ -251,6 +252,33 @@ namespace Backend.Services.Repository
                 Language = _extensionToLanguage.TryGetValue(ext, out var lang) ? lang : "plaintext"
             };
             return fileContent;
+        }
+
+        public async Task<List<RepoCommitSummaryDto>?> GetRepoCommits(Guid? userId, string username, string repoName)
+        {
+            Repo? repo = await _cache.GetOrCreateAsync($"repo-{username}-{repoName}", async entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
+                return await _repoRepository.GetByUsernameAndName(username, repoName);
+            });
+
+            if (repo == null) return null;
+            if (repo.IsPrivate && userId != repo.UserId)
+            {
+                throw new RepoAccessDenied();
+            }
+            List<RepoCommit>? repoCommits = await _repoRepository.GetRepoCommits(repo.Id);
+
+            List<RepoCommitSummaryDto>? commitSummaryDtos = repoCommits?.Select(rc => new RepoCommitSummaryDto
+            {
+                Id = rc.Id,
+                AuthorUsername = rc.User.Username,
+                CreatedAt = rc.CreatedAt,
+                Message = rc.Message,
+
+            }).ToList();
+
+            return commitSummaryDtos;
         }
     }
 }

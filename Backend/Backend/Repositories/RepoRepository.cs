@@ -112,5 +112,10 @@ namespace Backend.Repositories
         {
             return await _context.RepoFiles.Where(rf => rf.RepositoryId == repoId && rf.Path == path).FirstOrDefaultAsync();
         }
+
+        public async Task<List<RepoCommit>?> GetRepoCommits(Guid repoId)
+        {
+            return await _context.RepoCommits.Include(rc=>rc.User).Where(rc => rc.RepositoryId == repoId).ToListAsync();
+        }
     }
 }

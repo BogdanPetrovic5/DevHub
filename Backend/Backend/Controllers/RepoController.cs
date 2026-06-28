@@ -1,5 +1,6 @@
 ﻿using Backend.Dto;
 using Backend.Dto.Repository;
+using Backend.Exceptions;
 using Backend.Interfaces.Repository;
 using Backend.Models.Repository;
 using Backend.Responses;
@@ -94,7 +95,27 @@ namespace Backend.Controllers
 
             if (fileContent == null) return NotFound();
             return Ok(fileContent);
-               
+
+        }
+        [AllowAnonymous]
+        [HttpGet("{username}/{repoName}/commits")]
+        public async Task<ActionResult<List<RepoCommitSummaryDto>>> GetCommits(string username, string repoName)
+        {
+            var userIdClaims = User.FindFirst(ClaimTypes.NameIdentifier);
+            Guid? userId = userIdClaims != null ? Guid.Parse(userIdClaims.Value) : null;
+
+            try
+            {
+                List<RepoCommitSummaryDto>? repoCommitSummaryDtos = await _repoService.GetRepoCommits(userId, username, repoName);
+                return Ok(repoCommitSummaryDtos);
+            }
+            catch (RepoAccessDenied)
+            {
+                return Forbid();
+            }
+           
+
+            
         }
     }
 }
