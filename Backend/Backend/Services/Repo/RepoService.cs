@@ -280,5 +280,110 @@ namespace Backend.Services.Repository
 
             return commitSummaryDtos;
         }
+
+        public async Task<RepoResponse> Push(Guid repoId, Guid userId, PushRequestDto pushRequest)
+        {
+            Repo? repo = await _repoRepository.GetByIdAndOwner(repoId, userId);
+            if(repo == null)
+            {
+                return new RepoResponse
+                {
+                    Success = false,
+                    Message = "Repository not found."
+                };
+            }
+            if(repo.IsPrivate && repo.UserId != userId)
+            {
+               throw new RepoAccessDenied();
+            }
+
+            List<RepoFile> existingFiles = await _repoRepository.GetFiles(repoId);
+            if(existingFiles == null) { 
+                return new RepoResponse
+                {
+                    Success = false,
+                    Message = "Failed to retrieve existing files."
+                };
+            }
+            var existingFilesMap = existingFiles.ToDictionary(f => f.Path);
+
+            List<RepoFile> toInsert = new List<RepoFile>();
+            List<RepoFile> toUpdate = new List<RepoFile>();
+            List<RepoCommitFile> commitFiles = new List<RepoCommitFile>();
+            foreach (var file in pushRequest.Files) { 
+                var newHash = ComputeHash(file.Content);
+                var oldHash = existingFilesMap.TryGetValue(file.Path, out var existingFile) ? existingFile.Hash : null;
+                if(newHash != oldHash)
+                {
+                    if(existingFile != null)
+                    {
+                        existingFile.Content = file.Content;
+                        existingFile.Hash = newHash;
+                        toUpdate.Add(new RepoFile { 
+                            Path = existingFile.Path,
+                            Content = existingFile.Content,
+                            Hash = existingFile.Hash,
+                            RepositoryId = repoId
+
+                        });
+
+                        commitFiles.Add(new RepoCommitFile
+                        {
+                            Path = file.Path,
+                            Content = file.Content,
+                            ChangeType = "Modified",
+                        });
+                    }
+                    else
+                    {
+                        toInsert.Add(new RepoFile
+                        {
+                            Path = file.Path,
+                            Content = file.Content,
+                            Hash = newHash,
+                            RepositoryId = repoId
+                        });
+                        commitFiles.Add(new RepoCommitFile
+                        {
+                            Path = file.Path,
+                            Content = file.Content,
+                            ChangeType = "Added",
+                        });
+                    }
+                }
+            }
+            
+            var pushSet = pushRequest.Files.Select(f => f.Path).ToHashSet();
+            List<RepoFile> toDelete = existingFiles.Where(f => !pushSet.Contains(f.Path)).ToList();
+
+            foreach(var file in toDelete)
+            {
+                commitFiles.Add(new RepoCommitFile
+                {
+                    Path = file.Path,
+                    Content = file.Content,
+                    ChangeType = "Deleted",
+                });
+            }
+
+            RepoCommit repoCommit = new RepoCommit
+            {
+                Message = pushRequest.Message,
+                RepositoryId = repoId,
+                UserId = userId,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            try
+            {
+                await _repoRepository.SavePush(toInsert, toUpdate, toDelete, repoCommit, commitFiles);
+                _cache.Remove($"repo-files-{repoId}");
+                return new RepoResponse { Success = true, Message = "Push successful" };
+            }
+            catch (DbUpdateException)
+            {
+                return new RepoResponse { Success = false, Message = "Failed to save push." };
+            }
+        }
     }
 }
