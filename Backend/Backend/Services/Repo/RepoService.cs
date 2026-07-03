@@ -292,10 +292,7 @@ namespace Backend.Services.Repository
                     Message = "Repository not found."
                 };
             }
-            if(repo.IsPrivate && repo.UserId != userId)
-            {
-               throw new RepoAccessDenied();
-            }
+          
 
             List<RepoFile> existingFiles = await _repoRepository.GetFiles(repoId);
             if(existingFiles == null) { 
@@ -319,13 +316,7 @@ namespace Backend.Services.Repository
                     {
                         existingFile.Content = file.Content;
                         existingFile.Hash = newHash;
-                        toUpdate.Add(new RepoFile { 
-                            Path = existingFile.Path,
-                            Content = existingFile.Content,
-                            Hash = existingFile.Hash,
-                            RepositoryId = repoId
-
-                        });
+                        toUpdate.Add(existingFile);
 
                         commitFiles.Add(new RepoCommitFile
                         {

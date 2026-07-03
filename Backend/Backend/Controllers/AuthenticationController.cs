@@ -51,6 +51,17 @@ namespace Backend.Controllers
 
             return Ok(authResponse);
         }
+        [HttpPost("cli-login")]
+        public async Task<ActionResult> CliLogin([FromBody] LoginDto loginDto)
+        {
+            var userAgent = Request.Headers["User-Agent"].ToString();
+            if (!userAgent.StartsWith("DevHubCLI"))
+                return Forbid();
+
+            var result = await _authenticationService.Login(loginDto);
+            if (!result.Success) return Unauthorized(result);
+            return Ok(new { accessToken = result.AccessToken, refreshToken = result.RefreshToken });
+        }
         [HttpPost("login")]
         public async Task<ActionResult<AuthResponse>> Login(LoginDto loginDto)
         {

@@ -82,9 +82,9 @@ app.Use(async (context, next) =>
     context.Response.Headers.Append("Content-Security-Policy", "frame-ancestors 'none'");
     await next();
 });
-
-app.UseHttpsRedirection();
 app.UseCors();
+app.UseHttpsRedirection();
+
 app.UseAuthentication();
 app.UseAuthorization();
 

@@ -116,7 +116,7 @@ namespace Backend.Controllers
         }
         [Authorize]
         [HttpPut("{repoId}/push")]
-        public async Task<ActionResult<RepoResponse>> Push(string repoId,[FromBody] PushRequestDto pushRequest)
+        public async Task<ActionResult<RepoResponse>> Push(Guid repoId,[FromBody] PushRequestDto pushRequest)
         {
             var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
             var result = await _repoService.Push(repoId, userId, pushRequest);
