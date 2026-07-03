@@ -113,9 +113,15 @@ namespace Backend.Controllers
             {
                 return Forbid();
             }
-           
-
-            
+        }
+        [Authorize]
+        [HttpPut("{repoId}/push")]
+        public async Task<ActionResult<RepoResponse>> Push(string repoId,[FromBody] PushRequestDto pushRequest)
+        {
+            var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            var result = await _repoService.Push(repoId, userId, pushRequest);
+            if (!result.Success) return BadRequest(result);
+            return Ok(result);
         }
     }
 }
