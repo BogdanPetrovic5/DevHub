@@ -12,5 +12,6 @@ namespace Backend.Interfaces.Repository
         Task<RepoResponse> Upload(Guid repoId,Guid userId, RepoUploadRequest uploadRequest);
         Task<RepoFileContentDto?> GetFileContent(Guid repoId, string path);
         Task<List<RepoCommitSummaryDto>?> GetRepoCommits(Guid? userId, string username, string reponame);
+        Task<RepoResponse> Push(Guid repoId, Guid userId, PushRequestDto pushRequest);
     }
 }

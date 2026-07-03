@@ -7,6 +7,7 @@ using Backend.Models.Repository;
 using Backend.Responses;
 using Backend.Utility;
 using Microsoft.EntityFrameworkCore;
+using static Azure.Core.HttpHeader;
 
 namespace Backend.Repositories
 {
@@ -116,6 +117,32 @@ namespace Backend.Repositories
         public async Task<List<RepoCommit>?> GetRepoCommits(Guid repoId)
         {
             return await _context.RepoCommits.Include(rc=>rc.User).Where(rc => rc.RepositoryId == repoId).ToListAsync();
+        }
+
+        public async Task SavePush(List<RepoFile> toInsert, List<RepoFile> toUpdate, List<RepoFile> toDelete, RepoCommit repoCommit, List<RepoCommitFile> commitFiles)
+        {
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                await _context.RepoFiles.AddRangeAsync(toInsert);
+                _context.RepoFiles.UpdateRange(toUpdate);
+                _context.RepoFiles.RemoveRange(toDelete);
+                await _context.RepoCommits.AddAsync(repoCommit);
+                await _context.SaveChangesAsync();
+
+                foreach (var file in commitFiles)
+                    file.CommitId = repoCommit.Id;
+
+                await _context.RepoCommitFiles.AddRangeAsync(commitFiles);
+                await _context.SaveChangesAsync();
+
+                await transaction.CommitAsync();
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
         }
     }
 }

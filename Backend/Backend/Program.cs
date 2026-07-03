@@ -66,6 +66,16 @@ builder.Services.AddAuthentication(options =>
             return Task.CompletedTask;
         }
     };
+    options.Events = new JwtBearerEvents
+    {
+        OnMessageReceived = context =>
+        {
+            var authHeader = context.Request.Headers["Authorization"].ToString();
+            if (authHeader.StartsWith("Bearer "))
+                context.Token = authHeader["Bearer ".Length..];
+            return Task.CompletedTask;
+        }
+    };
 });
 var app = builder.Build();
 
@@ -82,9 +92,9 @@ app.Use(async (context, next) =>
     context.Response.Headers.Append("Content-Security-Policy", "frame-ancestors 'none'");
     await next();
 });
-
-app.UseHttpsRedirection();
 app.UseCors();
+app.UseHttpsRedirection();
+
 app.UseAuthentication();
 app.UseAuthorization();
 

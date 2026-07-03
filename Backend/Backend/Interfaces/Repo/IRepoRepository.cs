@@ -2,6 +2,7 @@
 using Backend.Models.Commit;
 using Backend.Models.Repository;
 using Backend.Responses;
+using System.Reflection.Metadata.Ecma335;
 
 namespace Backend.Interfaces.Repository
 {
@@ -17,5 +18,7 @@ namespace Backend.Interfaces.Repository
         Task SaveUpload(List<RepoFile> files, RepoCommit commit, List<RepoCommitFile> commitFiles);
         Task<RepoFile?> GetFileContent(Guid repoId, string path);
         Task<List<RepoCommit>?> GetRepoCommits(Guid repoId);
+        
+        Task SavePush(List<RepoFile> toInsert, List<RepoFile> toUpdate, List<RepoFile> toDelete, RepoCommit repoCommit, List<RepoCommitFile> commitFiles);
     }
 }
