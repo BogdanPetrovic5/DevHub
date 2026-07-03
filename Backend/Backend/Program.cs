@@ -62,20 +62,15 @@ builder.Services.AddAuthentication(options =>
     {
         OnMessageReceived = context =>
         {
-            context.Token = context.Request.Cookies["accessToken"];
-            return Task.CompletedTask;
-        }
-    };
-    options.Events = new JwtBearerEvents
-    {
-        OnMessageReceived = context =>
-        {
             var authHeader = context.Request.Headers["Authorization"].ToString();
             if (authHeader.StartsWith("Bearer "))
                 context.Token = authHeader["Bearer ".Length..];
+            else
+                context.Token = context.Request.Cookies["accessToken"];
             return Task.CompletedTask;
         }
     };
+   
 });
 var app = builder.Build();
 
