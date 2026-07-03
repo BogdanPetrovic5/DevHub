@@ -1,0 +1,197 @@
+.commits-page {
+  min-height: calc(100vh - 56px);
+  background: var(--c1);
+}
+
+// ---- Header ----
+.commits-header {
+  background: var(--c2);
+  border-bottom: 1px solid rgba(166, 207, 213, 0.08);
+
+  &__inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 20px 32px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  &__breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 1rem;
+  }
+
+  &__link {
+    color: var(--c4);
+    text-decoration: none;
+    font-weight: 600;
+    cursor: pointer;
+    &:hover { text-decoration: underline; }
+  }
+
+  &__sep {
+    color: rgba(166, 207, 213, 0.3);
+    font-size: 1.1rem;
+  }
+
+  &__current {
+    color: var(--c5);
+    font-weight: 700;
+  }
+}
+
+// ---- Tabs ----
+.repo-tabs {
+  display: flex;
+  gap: 4px;
+  margin-top: 6px;
+
+  &__item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    font-size: 0.84rem;
+    color: rgba(166, 207, 213, 0.55);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: color 0.15s;
+    text-decoration: none;
+    position: relative;
+    top: 1px;
+
+    &:hover { color: var(--c5); }
+
+    &--active {
+      color: var(--c5);
+      border-bottom-color: var(--c4);
+      font-weight: 600;
+    }
+  }
+
+  &__badge {
+    background: rgba(166, 207, 213, 0.1);
+    color: rgba(166, 207, 213, 0.6);
+    font-size: 0.7rem;
+    padding: 1px 6px;
+    border-radius: 99px;
+  }
+}
+
+// ---- Content ----
+.commits-content {
+  &__inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 24px 32px;
+  }
+}
+
+// ---- Commit list ----
+.commit-list {
+  background: var(--c2);
+  border: 1px solid rgba(166, 207, 213, 0.08);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.commit-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  border-bottom: 1px solid rgba(166, 207, 213, 0.06);
+  transition: background 0.12s;
+  gap: 16px;
+
+  &:last-child { border-bottom: none; }
+  &:hover { background: rgba(166, 207, 213, 0.03); }
+
+  &__left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+  }
+
+  &__avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--c3), var(--c4));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--c1);
+    flex-shrink: 0;
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+  }
+
+  &__msg {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--c5);
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  &__meta {
+    font-size: 0.78rem;
+    color: rgba(166, 207, 213, 0.4);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  &__author {
+    color: var(--c4);
+    font-weight: 600;
+  }
+
+  &__time {
+    color: rgba(166, 207, 213, 0.35);
+  }
+
+  &__right {
+    flex-shrink: 0;
+  }
+
+  &__hash {
+    font-size: 0.78rem;
+    font-family: monospace;
+    color: var(--c4);
+    background: rgba(166, 207, 213, 0.08);
+    padding: 3px 10px;
+    border-radius: 4px;
+  }
+}
+
+// ---- States ----
+.commits-loading {
+  text-align: center;
+  padding: 64px;
+  color: rgba(166, 207, 213, 0.3);
+  font-size: 0.85rem;
+}
+
+.commits-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 64px;
+  color: rgba(166, 207, 213, 0.25);
+  font-size: 0.85rem;
+}
