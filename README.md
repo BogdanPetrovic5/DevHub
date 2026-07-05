@@ -28,7 +28,6 @@ A GitHub-inspired developer platform built with Angular 17+ and .NET 10.
 - Repository creation and file upload via ZIP
 - Repository file tree browser with folder navigation and last commit messages
 - File viewer (blob) with line numbers and language detection
-- Clickjacking protection (X-Frame-Options + CSP)
 
 ## API Endpoints
 
@@ -38,13 +37,17 @@ A GitHub-inspired developer platform built with Angular 17+ and .NET 10.
 | POST | /api/auth/login | No | Login, sets auth cookies |
 | POST | /api/auth/refresh | No | Refreshes access token via HttpOnly cookie |
 | DELETE | /api/auth/logout | No | Logout, clears auth cookies and revokes refresh token |
+| POST | /api/auth/cli-login | CLI only* | Login for CLI, returns token in response body |
 | POST | /api/repo/new | 🔒 | Create a new repository |
 | GET | /api/repo/user | 🔒 | Get all repositories for the authenticated user |
 | POST | /api/repo/{repoId}/upload | 🔒 | Upload a ZIP file as a new commit |
+| PUT | /api/repo/{repoId}/push | 🔒 | Push changes with change detection |
 | GET | /api/repo/{username}/{repoName} | Public* | Get repository details and file tree |
 | GET | /api/repo/{username}/{repoName}/blob | Public* | Get file content |
+| GET | /api/repo/{username}/{repoName}/commits | Public* | Get commit history |
 
-> \* Public repos are accessible without authentication. Private repos require the owner's token.
+> `*` Public = accessible without token, but private repositories require authentication
+> `*` CLI only = requires `User-Agent: DevHubCLI`
 
 # DevHub API
 
