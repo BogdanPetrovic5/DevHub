@@ -356,7 +356,10 @@ namespace Backend.Services.Repository
                     ChangeType = "Deleted",
                 });
             }
-
+            if (toInsert.Count == 0 && toUpdate.Count == 0 && toDelete.Count == 0)
+            {
+                return new RepoResponse { Success = true, Message = "Nothing to push, everything up to date." };
+            }
             RepoCommit repoCommit = new RepoCommit
             {
                 Message = pushRequest.Message,
