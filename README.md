@@ -16,7 +16,7 @@ A GitHub-inspired developer platform built with Angular 17+ and .NET 10.
 - .NET 10 Web API
 - Entity Framework Core
 - JWT authentication (HttpOnly cookies)
-- BCrypt password hashing
+
 
 ## Features
 
@@ -138,6 +138,36 @@ Revoke refresh token and clear auth cookies.
 
 ---
 
+### POST /api/auth/cli-login `CLI only`
+Login for DevHub CLI. Returns tokens in response body instead of cookies.
+
+**Header required:** `User-Agent: DevHubCLI`
+
+**Body**
+```json
+{
+  "email": "string",
+  "password": "string"
+}
+```
+
+**Response `200 OK`**
+```json
+{
+  "accessToken": "string",
+  "refreshToken": "string"
+}
+```
+
+**Response `401 Unauthorized`**
+```json
+{ "success": false, "message": "Invalid credentials" }
+```
+
+**Response `403 Forbidden`** — missing or invalid `User-Agent` header
+
+---
+
 ## Repositories
 
 ### POST /api/repo/new 🔒
@@ -191,7 +221,37 @@ Upload a ZIP file as a new commit. Extracts files, ignores `.git` and `node_modu
 
 **Response `200 OK`**
 ```json
-{ "success": true, "message": "..." }
+{ "success": true, "message": "Upload successful" }
+```
+
+---
+
+### PUT /api/repo/{repoId}/push 🔒
+Push local files to a repository. Compares SHA-256 hashes — only modified, added, or deleted files are recorded. No commit is created if nothing changed.
+
+**Body**
+```json
+{
+  "message": "string",
+  "files": [
+    { "path": "string", "content": "string" }
+  ]
+}
+```
+
+**Response `200 OK`**
+```json
+{ "success": true, "message": "Push successful" }
+```
+
+**Response `200 OK`** — nothing changed
+```json
+{ "success": true, "message": "Nothing to push, everything up to date." }
+```
+
+**Response `400 Bad Request`**
+```json
+{ "success": false, "message": "Repository not found." }
 ```
 
 ---
@@ -215,7 +275,8 @@ Get repository details and file tree for the given path.
       "name": "string",
       "path": "string",
       "type": "tree | blob",
-      "lastCommitMessage": "string"
+      "lastCommitMessage": "string",
+      "lastCommitAt": "2026-06-19T00:00:00"
     }
   ]
 }
@@ -243,6 +304,25 @@ Get file content for the blob viewer.
 
 ---
 
+### GET /api/repo/{username}/{repoName}/commits `Public*`
+Get commit history for a repository.
+
+**Response `200 OK`**
+```json
+[
+  {
+    "id": "guid",
+    "message": "string",
+    "authorUsername": "string",
+    "createdAt": "2026-06-19T00:00:00"
+  }
+]
+```
+
+**Response `403 Forbidden`** — private repo, not the owner
+
+---
+
 > 🔒 — requires valid `accessToken` cookie  
 > \* — public repos accessible without auth; private repos require owner token
 
@@ -255,7 +335,7 @@ DevHub/
 │       ├── core/      # services, models, guards
 │       ├── features/  # landing, auth, dashboard, repository
 │       └── shared/    # reusable components (navbar)
-├── Backend/           # .NET 10 Web API
+└── Backend/           # .NET 10 Web API
     ├── Controllers/
     ├── Data/
     ├── Dto/
@@ -267,6 +347,7 @@ DevHub/
     ├── Security/
     ├── Services/
     └── Utility/
+
 ```
 
 ## Getting Started
