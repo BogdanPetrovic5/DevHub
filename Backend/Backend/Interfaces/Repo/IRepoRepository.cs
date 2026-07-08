@@ -20,5 +20,6 @@ namespace Backend.Interfaces.Repository
         Task<List<RepoCommit>?> GetRepoCommits(Guid repoId);
         
         Task SavePush(List<RepoFile> toInsert, List<RepoFile> toUpdate, List<RepoFile> toDelete, RepoCommit repoCommit, List<RepoCommitFile> commitFiles);
+        Task <List<RepoCommitFile>?> GetCommitFilesByCommitId(Guid commitId);
     }
 }

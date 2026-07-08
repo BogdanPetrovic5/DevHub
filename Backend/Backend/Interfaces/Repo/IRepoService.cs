@@ -1,5 +1,4 @@
-﻿using Backend.Dto;
-using Backend.Dto.Repository;
+﻿using Backend.Dto.Repository;
 using Backend.Responses;
 
 namespace Backend.Interfaces.Repository
@@ -13,5 +12,6 @@ namespace Backend.Interfaces.Repository
         Task<RepoFileContentDto?> GetFileContent(Guid repoId, string path);
         Task<List<RepoCommitSummaryDto>?> GetRepoCommits(Guid? userId, string username, string reponame);
         Task<RepoResponse> Push(Guid repoId, Guid userId, PushRequestDto pushRequest);
+        Task<CommitFilesDto?> GetCommitFiles(string username, string repoName, Guid commitId, Guid? userId);
     }
 }
