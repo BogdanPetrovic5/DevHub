@@ -1,4 +1,4 @@
-﻿namespace Backend.Dto
+﻿namespace Backend.Dto.Repository
 {
     public class CreateRepoDto
     {

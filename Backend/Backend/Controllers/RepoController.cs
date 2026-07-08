@@ -1,5 +1,4 @@
-﻿using Backend.Dto;
-using Backend.Dto.Repository;
+﻿using Backend.Dto.Repository;
 using Backend.Exceptions;
 using Backend.Interfaces.Repository;
 using Backend.Models.Repository;
@@ -29,7 +28,7 @@ namespace Backend.Controllers
             var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
             RepoResponse repoResponse = await _repoService.Create(createRepoDto, userId);
 
-            if(repoResponse.Success)
+            if (repoResponse.Success)
             {
                 return Ok(repoResponse);
             }
@@ -49,13 +48,13 @@ namespace Backend.Controllers
 
         [Authorize]
         [HttpPost("{repoId}/upload")]
-        public async Task<ActionResult<RepoResponse>> Upload(Guid repoId, [FromForm]RepoUploadRequest uploadRequest)
+        public async Task<ActionResult<RepoResponse>> Upload(Guid repoId, [FromForm] RepoUploadRequest uploadRequest)
         {
             _logger.LogInformation("Upload called");
-   
+
             var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
             RepoResponse result = await _repoService.Upload(repoId, userId, uploadRequest);
-            if(result.Success)
+            if (result.Success)
             {
                 return Ok(result);
             }
@@ -63,7 +62,7 @@ namespace Backend.Controllers
             {
                 return BadRequest(result);
             }
-            
+
         }
 
         [AllowAnonymous]
@@ -91,7 +90,7 @@ namespace Backend.Controllers
 
             if (repo.IsPrivate && userId != repo.OwnerId) return Forbid();
 
-            RepoFileContentDto? fileContent = await _repoService.GetFileContent(repo.Id,path);
+            RepoFileContentDto? fileContent = await _repoService.GetFileContent(repo.Id, path);
 
             if (fileContent == null) return NotFound();
             return Ok(fileContent);
@@ -116,12 +115,30 @@ namespace Backend.Controllers
         }
         [Authorize]
         [HttpPut("{repoId}/push")]
-        public async Task<ActionResult<RepoResponse>> Push(Guid repoId,[FromBody] PushRequestDto pushRequest)
+        public async Task<ActionResult<RepoResponse>> Push(Guid repoId, [FromBody] PushRequestDto pushRequest)
         {
             var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
             var result = await _repoService.Push(repoId, userId, pushRequest);
             if (!result.Success) return BadRequest(result);
             return Ok(result);
         }
+        [AllowAnonymous]
+        [HttpGet("{username}/{repoName}/commits/{commitId}")]
+        public async Task<ActionResult<CommitFilesDto?>> GetCommitDetails(string username, string repoName, Guid commitId)
+        {
+            var userIdClaims = User.FindFirst(ClaimTypes.NameIdentifier);
+            Guid? userId = userIdClaims != null ? Guid.Parse(userIdClaims.Value) : null;
+
+            try
+            {
+                CommitFilesDto? commitFiles = await _repoService.GetCommitFiles(username, repoName, commitId, userId);
+                return commitFiles;
+            }
+            catch (RepoAccessDenied)
+            {
+                return Forbid();
+            }
+        }
+       
     }
 }

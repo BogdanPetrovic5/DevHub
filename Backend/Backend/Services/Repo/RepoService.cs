@@ -1,5 +1,4 @@
 using Azure.Core;
-using Backend.Dto;
 using Backend.Dto.Repository;
 using Backend.Exceptions;
 using Backend.Interfaces.Repository;
@@ -378,6 +377,34 @@ namespace Backend.Services.Repository
             {
                 return new RepoResponse { Success = false, Message = "Failed to save push." };
             }
+        }
+
+        public async Task<CommitFilesDto?> GetCommitFiles(string username, string repoName, Guid commitId, Guid? userId)
+        {
+            Repo? repo = await _repoRepository.GetByUsernameAndName(username, repoName);
+            if (repo == null) return null;
+            if (repo.IsPrivate && repo.UserId != userId)
+            {
+                throw new RepoAccessDenied();
+            }
+            List<RepoCommitFile>? repoCommitFiles = await _repoRepository.GetCommitFilesByCommitId(commitId);
+            if(repoCommitFiles == null || !repoCommitFiles.Any()) return null;
+            var first = repoCommitFiles.First();
+            CommitFilesDto? commitFilesDto = new CommitFilesDto
+            {
+                AuhtorUsername = first.Commit?.User?.Username ?? "",
+                CommitMessage = first.Commit?.Message ?? "",
+                CreatedAt = first.Commit?.CreatedAt ?? default,
+                Files = repoCommitFiles.Select(cf => new RepoCommitFileDto
+                {
+                    Path = cf.Path,
+                    Content = cf.Content,
+                    ChangeType = cf.ChangeType
+                }).ToList()
+            };
+
+            return commitFilesDto;
+
         }
     }
 }

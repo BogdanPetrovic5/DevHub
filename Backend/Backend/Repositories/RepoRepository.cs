@@ -116,7 +116,7 @@ namespace Backend.Repositories
 
         public async Task<List<RepoCommit>?> GetRepoCommits(Guid repoId)
         {
-            return await _context.RepoCommits.Include(rc=>rc.User).Where(rc => rc.RepositoryId == repoId).ToListAsync();
+            return await _context.RepoCommits.Include(rc=>rc.User).Where(rc => rc.RepositoryId == repoId).OrderByDescending(rc => rc.CreatedAt).ToListAsync();
         }
 
         public async Task SavePush(List<RepoFile> toInsert, List<RepoFile> toUpdate, List<RepoFile> toDelete, RepoCommit repoCommit, List<RepoCommitFile> commitFiles)
@@ -143,6 +143,13 @@ namespace Backend.Repositories
                 await transaction.RollbackAsync();
                 throw;
             }
+        }
+
+        public async Task<List<RepoCommitFile>?> GetCommitFilesByCommitId(Guid commitId)
+        {
+            return await _context.RepoCommitFiles
+                .Where(cf => cf.CommitId == commitId)
+                .ToListAsync();
         }
     }
 }
