@@ -1,0 +1,50 @@
+<div class="commit-details-content">
+  <div class="commit-details-content__inner">
+
+    @if (!commit()) {
+      <div class="commit-details-loading">Loading...</div>
+    } @else {
+
+      <div class="commit-header">
+        <button class="commit-header__back" (click)="goBack()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M19 12H5M12 5l-7 7 7 7"/>
+          </svg>
+          Back to commits
+        </button>
+
+        <h2 class="commit-header__message">{{ commit()!.commitMessage }}</h2>
+
+        <div class="commit-header__meta">
+          <div class="commit-header__avatar">{{ commit()!.authorUsername[0].toUpperCase() }}</div>
+          <span class="commit-header__author">{{ commit()!.authorUsername }}</span>
+          <span class="commit-header__sep">committed</span>
+          <span class="commit-header__time">{{ commit()!.createdAt | timeAgo }}</span>
+          <span class="commit-header__hash">{{ shortHash() }}</span>
+        </div>
+
+        <div class="commit-header__stats">
+          <span class="commit-stats__count">{{ commit()!.files.length }} file{{ commit()!.files.length !== 1 ? 's' : '' }} changed</span>
+        </div>
+      </div>
+
+      <div class="file-list">
+        @for (file of commit()!.files; track file.path) {
+          <div class="file-item">
+            <div class="file-item__header">
+              <span class="file-item__badge" [class]="'file-item__badge--' + getChangeClass(file.changeType)">
+                {{ file.changeType }}
+              </span>
+              <span class="file-item__path">{{ file.path }}</span>
+            </div>
+            @if (file.changeType !== 'Deleted') {
+              <pre class="file-item__content"><code>{{ file.content }}</code></pre>
+            }
+          </div>
+        }
+      </div>
+
+    }
+
+  </div>
+</div>

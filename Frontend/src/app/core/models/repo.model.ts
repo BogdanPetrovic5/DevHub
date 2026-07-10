@@ -56,3 +56,16 @@ export interface RepoFileContentDto {
   content: string;
   language: string;
 }
+
+export interface CommitFilesDto {
+    authorUsername: string,
+    commitMessage: string,
+    createdAt: string,
+    files: RepoCommitFileDto[]
+
+}
+export interface RepoCommitFileDto{
+    path:string,
+    content:string,
+    changeType:'Added'|'Modified'|'Deleted'
+}

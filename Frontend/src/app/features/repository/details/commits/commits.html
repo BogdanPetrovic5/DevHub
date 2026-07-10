@@ -14,7 +14,7 @@
     } @else {
       <div class="commit-list">
         @for (commit of commits(); track commit.id) {
-          <div class="commit-item">
+          <div class="commit-item " (click)="navigate('repository/' + username + '/' + repoName + '/commits/' + commit.id)">
             <div class="commit-item__left">
               <div class="commit-item__avatar">{{ commit.authorUsername[0].toUpperCase() }}</div>
               <div class="commit-item__info">
@@ -27,7 +27,7 @@
               </div>
             </div>
             <div class="commit-item__right">
-              <span class="commit-item__hash">{{ commit.id.toString().slice(0, 7) }}</span>
+              <span class="commit-item__hash">{{ commit.shortHash }}</span>
             </div>
           </div>
         }
