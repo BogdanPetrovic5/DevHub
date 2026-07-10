@@ -9,6 +9,7 @@ import { authGuard } from './core/guards/auth-guard';
 import { Blob } from './features/repository/blob/blob';
 import { Commits } from './features/repository/details/commits/commits';
 import { Code } from './features/repository/details/code/code';
+import { CommitDetails } from './features/repository/details/commit-details/commit-details';
 
 export const routes: Routes = [
   { path: '', component: Landing },
@@ -21,7 +22,8 @@ export const routes: Routes = [
     canActivate: [dashboardGuard],
     children: [
       { path: '', component: Code },
-      { path: 'commits', component: Commits }
+      { path: 'commits', component: Commits },
+      { path: 'commits/:commitId', component: CommitDetails }
     ]
   },
   { path: 'repository/:username/:repoName/blob', component: Blob, canActivate: [dashboardGuard] },

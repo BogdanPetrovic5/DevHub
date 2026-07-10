@@ -1,5 +1,5 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { RepoCommitSummaryDto } from '../../../../core/models/repo.model';
 import { RepoService } from '../../../../core/services/repository/repo-service';
 import { TimeAgoPipe } from '../../../../shared/pipes/time-ago-pipe';
@@ -13,18 +13,21 @@ import { TimeAgoPipe } from '../../../../shared/pipes/time-ago-pipe';
 export class Commits implements OnInit {
   private _route = inject(ActivatedRoute);
   private _repoService = inject(RepoService);
-
+  private _router = inject(Router);
   commits = signal<RepoCommitSummaryDto[] | null>(null);
 
-  private _username = this._route.parent!.snapshot.paramMap.get('username')!;
-  private _repoName = this._route.parent!.snapshot.paramMap.get('repoName')!;
+  username = this._route.parent!.snapshot.paramMap.get('username')!;
+  repoName = this._route.parent!.snapshot.paramMap.get('repoName')!;
 
   ngOnInit(): void {
-    this._repoService.getCommits(this._username, this._repoName).subscribe({
+    this._repoService.getCommits(this.username, this.repoName).subscribe({
       next: response => {
         this.commits.set(response)
         console.log(this.commits())
       }
     });
+  }
+  navigate(url: string): void { 
+    this._router.navigate([url]);
   }
 }

@@ -1,0 +1,179 @@
+.commit-details-content {
+  &__inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 24px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+}
+
+// ---- Header ----
+.commit-header {
+  background: var(--c2);
+  border: 1px solid rgba(166, 207, 213, 0.08);
+  border-radius: 10px;
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+
+  &__back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: none;
+    border: none;
+    color: var(--c4);
+    font-size: 0.82rem;
+    cursor: pointer;
+    padding: 0;
+    width: fit-content;
+
+    &:hover { text-decoration: underline; }
+  }
+
+  &__message {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--c5);
+    margin: 0;
+  }
+
+  &__meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  &__avatar {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--c3), var(--c4));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--c1);
+    flex-shrink: 0;
+  }
+
+  &__author {
+    font-size: 0.84rem;
+    font-weight: 600;
+    color: var(--c4);
+  }
+
+  &__sep {
+    font-size: 0.82rem;
+    color: rgba(166, 207, 213, 0.35);
+  }
+
+  &__time {
+    font-size: 0.82rem;
+    color: rgba(166, 207, 213, 0.35);
+  }
+
+  &__hash {
+    font-size: 0.78rem;
+    font-family: monospace;
+    color: var(--c4);
+    background: rgba(166, 207, 213, 0.08);
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-left: auto;
+  }
+
+  &__stats {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+}
+
+.commit-stats__count {
+  font-size: 0.82rem;
+  color: rgba(166, 207, 213, 0.4);
+}
+
+// ---- File list ----
+.file-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.file-item {
+  background: var(--c2);
+  border: 1px solid rgba(166, 207, 213, 0.08);
+  border-radius: 10px;
+  overflow: hidden;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(166, 207, 213, 0.06);
+    background: rgba(166, 207, 213, 0.02);
+  }
+
+  &__badge {
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    flex-shrink: 0;
+
+    &--added {
+      background: rgba(63, 185, 80, 0.15);
+      color: #3fb950;
+    }
+
+    &--modified {
+      background: rgba(210, 153, 34, 0.15);
+      color: #d29922;
+    }
+
+    &--deleted {
+      background: rgba(248, 81, 73, 0.15);
+      color: #f85149;
+    }
+  }
+
+  &__path {
+    font-size: 0.85rem;
+    font-family: monospace;
+    color: var(--c5);
+  }
+
+  &__content {
+    margin: 0;
+    padding: 16px;
+    font-size: 0.8rem;
+    font-family: monospace;
+    color: rgba(166, 207, 213, 0.7);
+    line-height: 1.6;
+    overflow-x: auto;
+    white-space: pre;
+    max-height: 400px;
+    overflow-y: auto;
+    background: var(--c1);
+    content-visibility: auto;
+  contain-intrinsic-size: 0 500px;
+  }
+}
+
+// ---- States ----
+.commit-details-loading {
+  text-align: center;
+  padding: 64px;
+  color: rgba(166, 207, 213, 0.3);
+  font-size: 0.85rem;
+}
