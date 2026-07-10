@@ -147,7 +147,7 @@ namespace Backend.Repositories
 
         public async Task<List<RepoCommitFile>?> GetCommitFilesByCommitId(Guid commitId)
         {
-            return await _context.RepoCommitFiles
+            return await _context.RepoCommitFiles.Include(cf => cf.Commit).Include(cf=> cf.Commit.User)
                 .Where(cf => cf.CommitId == commitId)
                 .ToListAsync();
         }
