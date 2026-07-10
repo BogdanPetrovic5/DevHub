@@ -20,6 +20,19 @@ export class CommitDetails implements OnInit {
   private _commitId = this._route.snapshot.paramMap.get('commitId')!;
 
   commit = signal<CommitFilesDto | null>(null);
+  expandedFiles = signal<Set<string>>(new Set());
+
+  toggleFile(path: string): void {
+    this.expandedFiles.update(set => {
+      const next = new Set(set);
+      next.has(path) ? next.delete(path) : next.add(path);
+      return next;
+    });
+  }
+
+  isExpanded(path: string): boolean {
+    return this.expandedFiles().has(path);
+  }
 
   ngOnInit(): void {
     this._repoService.getCommitDetails(this._username, this._repoName, this._commitId).subscribe({

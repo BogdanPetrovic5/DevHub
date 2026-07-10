@@ -6,7 +6,8 @@ import { min } from 'rxjs';
 })
 export class TimeAgoPipe implements PipeTransform {
   transform(value: string): string {
-    const seconds = Math.floor((Date.now() - new Date(value).getTime()) / 1000);
+    const normalized = value.endsWith('Z') ? value : value + 'Z';
+    const seconds = Math.floor((Date.now() - new Date(normalized).getTime()) / 1000);
 
     if(seconds < 60) return "just now";
     const minutes = Math.floor(seconds / 60);
