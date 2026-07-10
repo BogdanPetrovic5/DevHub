@@ -16,7 +16,7 @@
         <h2 class="commit-header__message">{{ commit()!.commitMessage }}</h2>
 
         <div class="commit-header__meta">
-          <div class="commit-header__avatar">{{ commit()!.authorUsername[0].toUpperCase() }}</div>
+          <div class="commit-header__avatar">{{ commit()!.authorUsername[0]?.toUpperCase() }}</div>
           <span class="commit-header__author">{{ commit()!.authorUsername }}</span>
           <span class="commit-header__sep">committed</span>
           <span class="commit-header__time">{{ commit()!.createdAt | timeAgo }}</span>
@@ -38,7 +38,12 @@
               <span class="file-item__path">{{ file.path }}</span>
             </div>
             @if (file.changeType !== 'Deleted') {
-              <pre class="file-item__content"><code>{{ file.content }}</code></pre>
+              <button class="file-item__toggle" (click)="toggleFile(file.path)">
+                {{ isExpanded(file.path) ? 'Hide content' : 'Show content' }}
+              </button>
+              @if (isExpanded(file.path)) {
+                <pre class="file-item__content"><code>{{ file.content }}</code></pre>
+              }
             }
           </div>
         }

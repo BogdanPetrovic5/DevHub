@@ -40,6 +40,7 @@ export class Code implements OnInit {
         next: response => {
           this.repo.set(response);
           this.repoLanguagePercentageMap.set(response.languages);
+          console.log(this.repo());
         }
       });
     });
