@@ -217,6 +217,7 @@ namespace Backend.Services.Repository
             {
                 await _repoRepository.SaveUpload(files, commit, commitFiles);
                 _cache.Remove($"repo-files-{repoId}");
+                _cache.Remove($"repo-commits-{repoId}");
                 return new RepoResponse { Success = true, Message = "Upload successful" };
             }
             catch (DbUpdateException)
@@ -266,16 +267,16 @@ namespace Backend.Services.Repository
             {
                 throw new RepoAccessDenied();
             }
-            List<RepoCommit>? repoCommits = await _repoRepository.GetRepoCommits(repo.Id);
-
-            List<RepoCommitSummaryDto>? commitSummaryDtos = repoCommits?.Select(rc => new RepoCommitSummaryDto
+            List<RepoCommit>? repoCommits = await _cache.GetOrCreateAsync($"repo-commits-{repo.Id}", async entry =>
             {
-                Id = rc.Id,
-                AuthorUsername = rc.User.Username,
-                CreatedAt = rc.CreatedAt,
-                Message = rc.Message,
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
+                return await _repoRepository.GetRepoCommits(repo.Id);
+            });
 
-            }).ToList();
+            List<RepoCommitSummaryDto>? commitSummaryDtos = repoCommits?
+                .OrderByDescending(rc => rc.CreatedAt)
+                .Select(rc => rc.ToSummaryDto())
+                .ToList();
 
             return commitSummaryDtos;
         }
@@ -371,6 +372,7 @@ namespace Backend.Services.Repository
             {
                 await _repoRepository.SavePush(toInsert, toUpdate, toDelete, repoCommit, commitFiles);
                 _cache.Remove($"repo-files-{repoId}");
+                _cache.Remove($"repo-commits-{repoId}");
                 return new RepoResponse { Success = true, Message = "Push successful" };
             }
             catch (DbUpdateException)
@@ -387,12 +389,16 @@ namespace Backend.Services.Repository
             {
                 throw new RepoAccessDenied();
             }
-            List<RepoCommitFile>? repoCommitFiles = await _repoRepository.GetCommitFilesByCommitId(commitId);
+            List<RepoCommitFile>? repoCommitFiles = await _cache.GetOrCreateAsync($"commit-files-{commitId}", async entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30);
+                return await _repoRepository.GetCommitFilesByCommitId(commitId);
+            });
             if(repoCommitFiles == null || !repoCommitFiles.Any()) return null;
             var first = repoCommitFiles.First();
             CommitFilesDto? commitFilesDto = new CommitFilesDto
             {
-                AuhtorUsername = first.Commit?.User?.Username ?? "",
+                AuthorUsername = first.Commit?.User?.Username ?? "",
                 CommitMessage = first.Commit?.Message ?? "",
                 CreatedAt = first.Commit?.CreatedAt ?? default,
                 Files = repoCommitFiles.Select(cf => new RepoCommitFileDto
