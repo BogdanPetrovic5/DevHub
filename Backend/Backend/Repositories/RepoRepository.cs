@@ -89,6 +89,7 @@ namespace Backend.Repositories
             var repos = await _context.Repositories
                 .Include(r => r.User)
                 .Where(r => r.UserId == userId)
+                .OrderByDescending(r => r.CreatedAt)
                 .ToListAsync();
 
             return repos.Select(r => r.ToDto()).ToList();
@@ -149,6 +150,8 @@ namespace Backend.Repositories
         {
             return await _context.RepoCommitFiles.Include(cf => cf.Commit).Include(cf=> cf.Commit.User)
                 .Where(cf => cf.CommitId == commitId)
+                .Include(cf => cf.Commit)
+                .ThenInclude(c => c.User)
                 .ToListAsync();
         }
     }
