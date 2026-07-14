@@ -45,6 +45,7 @@ A GitHub-inspired developer platform built with Angular 17+ and .NET 10.
 | GET | /api/repo/{username}/{repoName} | Public* | Get repository details and file tree |
 | GET | /api/repo/{username}/{repoName}/blob | Public* | Get file content |
 | GET | /api/repo/{username}/{repoName}/commits | Public* | Get commit history |
+| GET | /api/repo/{username}/{repoName}/commits/{commitId} | Public* | Get commit details with changed files |
 
 > `*` Public = accessible without token, but private repositories require authentication
 > `*` CLI only = requires `User-Agent: DevHubCLI`
@@ -319,6 +320,30 @@ Get commit history for a repository.
 ]
 ```
 
+**Response `403 Forbidden`** — private repo, not the owner
+
+---
+
+### GET /api/repo/{username}/{repoName}/commits/{commitId} `Public*`
+Get details for a specific commit including all changed files.
+
+**Response `200 OK`**
+```json
+{
+  "authorUsername": "string",
+  "commitMessage": "string",
+  "createdAt": "2026-06-19T00:00:00",
+  "files": [
+    {
+      "path": "string",
+      "content": "string",
+      "changeType": "Added | Modified | Deleted"
+    }
+  ]
+}
+```
+
+**Response `404 Not Found`** — commit not found  
 **Response `403 Forbidden`** — private repo, not the owner
 
 ---
