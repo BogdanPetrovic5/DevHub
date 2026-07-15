@@ -412,5 +412,32 @@ namespace Backend.Services.Repository
             return commitFilesDto;
 
         }
+
+        public async Task<List<ActivityDto>> GetActivity(Guid userId)
+        {
+            List<RepoCommit>? _userCommits = await _repoRepository.GetRecentCommits(userId);
+
+            return _userCommits.GroupBy(c => c.Repository.Name).Select(ac => new ActivityDto
+            {
+                Type = "push",
+                Message = $"Pushed {ac.Count()} commits to {ac.Key}",
+                RepoName = ac.Key,
+                CreatedAt = ac.Max(c => c.CreatedAt),
+                Commits = ac.Select(c => new ActivityCommitDto
+                {
+                    ShortHash = c.Id.ToString("N")[..7],
+                    Message = c.Message
+                }).ToList()
+
+            })
+            .OrderByDescending(a => a.CreatedAt)
+            .ToList();
+
+
+         
+            
+         
+
+        }
     }
 }

@@ -139,6 +139,14 @@ namespace Backend.Controllers
                 return Forbid();
             }
         }
-       
+
+        [Authorize]
+        [HttpGet("activity")]
+        public async Task<ActionResult<List<ActivityDto>>> GetUserActivity()
+        {
+            var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            List<ActivityDto> activities = await _repoService.GetActivity(userId);
+            return Ok(activities);
+        }
     }
 }
