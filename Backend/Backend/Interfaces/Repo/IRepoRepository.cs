@@ -15,11 +15,16 @@ namespace Backend.Interfaces.Repository
         Task<List<RepoFile>> GetFiles(Guid repoId);
         Task<List<RepoCommitFile>> GetCommitFiles(Guid repoId);
         Task<RepoCommit?> GetLatestCommit(Guid repoId);
+
+        Task<List<RepoCommit>> GetRecentCommits(Guid userId);
+
         Task SaveUpload(List<RepoFile> files, RepoCommit commit, List<RepoCommitFile> commitFiles);
         Task<RepoFile?> GetFileContent(Guid repoId, string path);
         Task<List<RepoCommit>?> GetRepoCommits(Guid repoId);
         
         Task SavePush(List<RepoFile> toInsert, List<RepoFile> toUpdate, List<RepoFile> toDelete, RepoCommit repoCommit, List<RepoCommitFile> commitFiles);
         Task <List<RepoCommitFile>?> GetCommitFilesByCommitId(Guid commitId);
+
+        
     }
 }

@@ -13,5 +13,6 @@ namespace Backend.Interfaces.Repository
         Task<List<RepoCommitSummaryDto>?> GetRepoCommits(Guid? userId, string username, string reponame);
         Task<RepoResponse> Push(Guid repoId, Guid userId, PushRequestDto pushRequest);
         Task<CommitFilesDto?> GetCommitFiles(string username, string repoName, Guid commitId, Guid? userId);
+        Task<List<ActivityDto>> GetActivity(Guid userId);
     }
 }

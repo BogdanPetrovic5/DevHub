@@ -154,5 +154,16 @@ namespace Backend.Repositories
                 .ThenInclude(c => c.User)
                 .ToListAsync();
         }
+
+        public Task<List<RepoCommit>> GetRecentCommits(Guid userId)
+        {
+            return _context.RepoCommits
+                .Include(c => c.User)
+                .Include(c => c.Repository)
+                .Where(c => c.UserId == userId)
+                .OrderByDescending(c => c.CreatedAt)
+                .Take(5)
+                .ToListAsync();
+        }
     }
 }
