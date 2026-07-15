@@ -69,3 +69,16 @@ export interface RepoCommitFileDto{
     content:string,
     changeType:'Added'|'Modified'|'Deleted'
 }
+
+export interface ActivityDto {
+    type: string,
+    message: string,
+    repoName: string | null,
+    createdAt: string,
+    commits: ActivityCommitDto[]
+}
+
+export interface ActivityCommitDto {
+    shortHash: string,
+    message: string
+}

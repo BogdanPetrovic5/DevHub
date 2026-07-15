@@ -142,47 +142,28 @@
         </div>
 
         <div class="activity">
-          <div class="activity__item">
-            <div class="activity__dot activity__dot--commit"></div>
-            <div class="activity__content">
-              <span class="activity__action">Pushed <strong>3 commits</strong> to <a href="#" class="activity__repo">DevHub</a></span>
-              <span class="activity__time">2 hours ago</span>
-              <div class="activity__commits">
-                <div class="activity__commit">
-                  <span class="activity__hash">ffe73af</span>
-                  <span class="activity__msg">bug: add withCredentials fix</span>
-                </div>
-                <div class="activity__commit">
-                  <span class="activity__hash">2762a8b</span>
-                  <span class="activity__msg">feat: add CORS credentials</span>
+          @for (item of activity(); track item.repoName) {
+            <div class="activity__item">
+              <div class="activity__dot activity__dot--commit"></div>
+              <div class="activity__content">
+                <span class="activity__action">Pushed <strong>{{ item.commits.length }} commit{{ item.commits.length !== 1 ? 's' : '' }}</strong> to <a class="activity__repo">{{ item.repoName }}</a></span>
+                <span class="activity__time">{{ item.createdAt | timeAgo }}</span>
+                <div class="activity__commits">
+                  @for (commit of item.commits; track commit.shortHash) {
+                    <div class="activity__commit">
+                      <span class="activity__hash">{{ commit.shortHash }}</span>
+                      <span class="activity__msg">{{ commit.message }}</span>
+                    </div>
+                  }
                 </div>
               </div>
             </div>
-          </div>
+          }
 
           
 
-          <div class="activity__item">
-            <div class="activity__dot activity__dot--issue"></div>
-            <div class="activity__content">
-              <span class="activity__action">Closed issue <a href="#" class="activity__repo">#5 Auth cookie not persisting</a></span>
-              <span class="activity__time">2 days ago</span>
-            </div>
-          </div>
+      
 
-          <div class="activity__item">
-            <div class="activity__dot activity__dot--commit"></div>
-            <div class="activity__content">
-              <span class="activity__action">Pushed <strong>1 commit</strong> to <a href="#" class="activity__repo">dotnet-auth-starter</a></span>
-              <span class="activity__time">3 days ago</span>
-              <div class="activity__commits">
-                <div class="activity__commit">
-                  <span class="activity__hash">99bb742</span>
-                  <span class="activity__msg">feat: add CORS configuration</span>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       </section>
     </div>
