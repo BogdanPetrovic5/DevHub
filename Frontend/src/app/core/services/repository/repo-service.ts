@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Service } from '@angular/core';
 import { Observable } from 'rxjs';
-import { CommitFilesDto, CreateRepoRequest, RepoCommitSummaryDto, RepoDetailDto, RepoDto, RepoFileContentDto, RepoResponse } from '../../models/repo.model';
+import { ActivityDto, CommitFilesDto, CreateRepoRequest, RepoCommitSummaryDto, RepoDetailDto, RepoDto, RepoFileContentDto, RepoResponse } from '../../models/repo.model';
 import { environment } from '../../../../environments/environment';
 
 @Service()
@@ -45,5 +45,10 @@ export class RepoService {
         const url = `${environment.apiUrl}/api/repo/${username}/${repoName}/commits/${commitId}`
 
         return this._httpClient.get<CommitFilesDto>(url, {withCredentials:true});
+    }
+
+    activity():Observable<ActivityDto[]>{
+        const url = `${environment.apiUrl}/api/repo/activity`
+        return this._httpClient.get<ActivityDto[]>(url, {withCredentials:true});
     }
 }
