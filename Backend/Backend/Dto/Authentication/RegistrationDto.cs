@@ -1,4 +1,4 @@
-﻿namespace Backend.Dto
+﻿namespace Backend.Dto.Authentication
 {
     public class RegistrationDto
     {

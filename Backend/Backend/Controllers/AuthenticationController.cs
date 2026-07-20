@@ -1,4 +1,4 @@
-﻿using Backend.Dto;
+﻿using Backend.Dto.Authentication;
 using Backend.Interfaces.Authentication;
 using Backend.Interfaces.Security;
 using Backend.Models;
