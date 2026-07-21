@@ -7,6 +7,8 @@ using System.Security.Claims;
 
 namespace Backend.Controllers
 {
+    [Route("api/user")]
+    [ApiController]
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
@@ -15,10 +17,10 @@ namespace Backend.Controllers
             _userService = userService;
         }
         [AllowAnonymous]
-        [HttpGet("user/{username}")]
+        [HttpGet("{username}")]
         public async Task<ActionResult<ProfileDto>> GetUser(string username)
         {
-            var userIdClaims =   User.FindFirst(ClaimTypes.NameIdentifier);
+            var userIdClaims = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier);
             Guid? userId = userIdClaims != null ? Guid.Parse(userIdClaims.Value) : null;
 
             try
