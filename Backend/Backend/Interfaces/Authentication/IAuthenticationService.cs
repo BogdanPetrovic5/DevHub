@@ -1,4 +1,4 @@
-﻿using Backend.Dto;
+﻿using Backend.Dto.Authentication;
 using Backend.Responses;
 
 namespace Backend.Interfaces.Authentication
