@@ -14,7 +14,7 @@ namespace Backend.Repositories
             _devHubDbContext = devHubDbContext;
         }
 
-        public async Task<AuthResponse> Register(User user)
+        public async Task<AuthResponse> Register(Models.User user)
         {
             try
             {
@@ -41,14 +41,14 @@ namespace Backend.Repositories
             return await _devHubDbContext.Users.AnyAsync(u => u.Email == email);
         }
 
-        public async Task<User?> GetUserByEmail(string email)
+        public async Task<Models.User?> GetUserByEmail(string email)
         {
             return await _devHubDbContext.Users.FirstOrDefaultAsync(u => u.Email == email);
         }
 
     
 
-        public async Task<User?> GetUserById(Guid userId)
+        public async Task<Models.User?> GetUserById(Guid userId)
         {
             return await _devHubDbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
         }

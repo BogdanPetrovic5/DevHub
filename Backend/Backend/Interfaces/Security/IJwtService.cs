@@ -4,7 +4,7 @@ namespace Backend.Interfaces.Security
 {
     public interface IJwtService
     {
-        string GenerateAccessToken(User user);
+        string GenerateAccessToken(Models.User user);
         string GenerateRefreshToken();
     }
 }

@@ -2,11 +2,13 @@ using Backend.Data;
 using Backend.Interfaces.Authentication;
 using Backend.Interfaces.Repository;
 using Backend.Interfaces.Security;
+using Backend.Interfaces.User;
 using Backend.Repositories;
 using Backend.Security;
 using Backend.Services.Authentication;
 using Backend.Services.Repository;
 using Backend.Services.Security;
+using Backend.Services.User;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -22,6 +24,8 @@ builder.Services.AddScoped<ICookieService, CookieService>();
 builder.Services.AddMemoryCache();
 builder.Services.AddScoped<IRepoService, RepoService>();
 builder.Services.AddScoped<IRepoRepository, RepoRepository>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 // Add services to the container.
 builder.Services.AddDbContext<DevHubDbContext>(options => { options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")); });
     

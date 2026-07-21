@@ -1,4 +1,5 @@
 ﻿using Backend.Dto.Authentication;
+using Backend.Dto.User;
 using Backend.Interfaces.Authentication;
 using Backend.Interfaces.Security;
 using Backend.Models;
@@ -75,6 +76,19 @@ namespace Backend.Controllers
 
             return Ok(authResponse);
         }
+        [Authorize]
+        [HttpGet("me")]
+        public ActionResult<MeDto> Me()
+        {
+            var username = HttpContext.User.FindFirst(ClaimTypes.Name)?.Value;
+            var email = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
+
+            if (username == null || email == null)
+                return Unauthorized();
+
+            return Ok(new Backend.Dto.User.MeDto { Username = username, Email = email });
+        }
+
         [HttpDelete("logout")]
         public async Task<ActionResult> Logout()
         {

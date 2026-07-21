@@ -14,7 +14,7 @@ namespace Backend.Services.Security
         {
             _configuration = configuration;
         }
-        public string GenerateAccessToken(User user)
+        public string GenerateAccessToken(Models.User user)
         {
             var claims = new[]
            {

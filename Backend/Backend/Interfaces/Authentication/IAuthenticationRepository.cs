@@ -6,10 +6,10 @@ namespace Backend.Interfaces.Authentication
 {
     public interface IAuthenticationRepository
     {
-        Task<AuthResponse> Register(User user);
-        Task<User?> GetUserByEmail(string email);
+        Task<AuthResponse> Register(Models.User user);
+        Task<Models.User?> GetUserByEmail(string email);
         Task<bool> EmailExists(string email);
     
-        Task<User?> GetUserById(Guid userId);
+        Task<Models.User?> GetUserById(Guid userId);
     }
  }

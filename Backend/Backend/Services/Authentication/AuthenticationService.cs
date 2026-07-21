@@ -29,7 +29,7 @@ namespace Backend.Services.Authentication
             if (await _authenticationRepository.EmailExists(registrationDto.Email))
                 return new AuthResponse { Success = false, Message = "Email already exists" };
 
-            User user = new User
+            Models.User user = new Models.User
             {
                 Username = registrationDto.Username,
                 Email = registrationDto.Email,
@@ -54,7 +54,7 @@ namespace Backend.Services.Authentication
 
         public async Task<AuthResponse> Login(LoginDto loginDto)
         {
-            User? user = await _authenticationRepository.GetUserByEmail(loginDto.Email);
+            Models.User? user = await _authenticationRepository.GetUserByEmail(loginDto.Email);
 
             if (user == null || !_passwordEncoder.VerifyPassword(loginDto.Password, user.PasswordHash))
                 return new AuthResponse { Success = false, Message = "Invalid email or password" };
@@ -91,7 +91,7 @@ namespace Backend.Services.Authentication
             {
                 return new AuthResponse { Success = false, Message = "Invalid or expired refresh token" };
             }
-            User? user = await _authenticationRepository.GetUserById(token.UserId);
+            Models.User? user = await _authenticationRepository.GetUserById(token.UserId);
             if (user == null) { 
                 return new AuthResponse { Success = false, Message = "User not found" };
             }
