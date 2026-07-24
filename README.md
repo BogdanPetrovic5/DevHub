@@ -46,6 +46,9 @@ A GitHub-inspired developer platform built with Angular 17+ and .NET 10.
 | GET | /api/repo/{username}/{repoName}/blob | Public* | Get file content |
 | GET | /api/repo/{username}/{repoName}/commits | Public* | Get commit history |
 | GET | /api/repo/{username}/{repoName}/commits/{commitId} | Public* | Get commit details with changed files |
+| GET | /api/repo/activity | 🔒 | Get recent commit activity grouped by repo |
+| GET | /api/auth/me | 🔒 | Get current authenticated user (username, email) |
+| GET | /api/user/{username} | Public* | Get public profile with repos and stats |
 
 > `*` Public = accessible without token, but private repositories require authentication
 > `*` CLI only = requires `User-Agent: DevHubCLI`
@@ -345,6 +348,61 @@ Get details for a specific commit including all changed files.
 
 **Response `404 Not Found`** — commit not found  
 **Response `403 Forbidden`** — private repo, not the owner
+
+---
+
+---
+
+### GET /api/repo/activity 🔒
+Get recent commit activity for the authenticated user, grouped by repository.
+
+**Response `200 OK`**
+```json
+[
+  {
+    "type": "push",
+    "message": "string",
+    "repoName": "string",
+    "createdAt": "2026-06-19T00:00:00Z",
+    "commits": [
+      { "shortHash": "string", "message": "string" }
+    ]
+  }
+]
+```
+
+---
+
+### GET /api/auth/me 🔒
+Get the currently authenticated user's basic info from JWT claims.
+
+**Response `200 OK`**
+```json
+{
+  "username": "string",
+  "email": "string"
+}
+```
+
+---
+
+### GET /api/user/{username} `Public`
+Get a user's public profile.
+
+**Response `200 OK`**
+```json
+{
+  "username": "string",
+  "firstName": "string",
+  "lastName": "string",
+  "email": "string",
+  "repoCount": 0,
+  "commitCount": 0,
+  "repositories": []
+}
+```
+
+**Response `404 Not Found`** — user not found
 
 ---
 
