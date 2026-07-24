@@ -1,0 +1,81 @@
+<app-app-navbar />
+
+<div class="profile-page">
+  @if (profile(); as p) {
+    <aside class="profile-sidebar">
+      <div class="profile-sidebar__avatar">{{ initials() }}</div>
+
+      <div class="profile-sidebar__identity">
+        <h1 class="profile-sidebar__fullname">{{ p.firstName }} {{ p.lastName }}</h1>
+        <span class="profile-sidebar__username">&#64;{{ p.username }}</span>
+      </div>
+
+      <div class="profile-sidebar__email">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+          <polyline points="22,6 12,12 2,6"/>
+        </svg>
+        {{ p.email }}
+      </div>
+
+      <div class="profile-sidebar__stats">
+        <div class="profile-sidebar__stat">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+          </svg>
+          <span class="profile-sidebar__stat-value">{{ p.repoCount }}</span>
+          <span class="profile-sidebar__stat-label">repositories</span>
+        </div>
+        <div class="profile-sidebar__stat">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="4"/><line x1="1.05" y1="12" x2="7" y2="12"/>
+            <line x1="17.01" y1="12" x2="22.96" y2="12"/>
+          </svg>
+          <span class="profile-sidebar__stat-value">{{ p.commitCount }}</span>
+          <span class="profile-sidebar__stat-label">commits</span>
+        </div>
+      </div>
+    </aside>
+
+    <main class="profile-main">
+      <nav class="profile-tabs">
+        <button class="profile-tabs__tab profile-tabs__tab--active">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+          </svg>
+          Repositories
+          <span class="profile-tabs__count">{{ p.repoCount }}</span>
+        </button>
+      </nav>
+
+      <div class="profile-repos">
+        @for (repo of p.repositories; track repo.id) {
+          <div class="profile-repo-card">
+            <div class="profile-repo-card__header">
+              <a class="profile-repo-card__name" (click)="navigate('repository/' + p.username + '/' + repo.name)">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+                </svg>
+                {{ repo.name }}
+              </a>
+              <span class="profile-repo-card__visibility">{{ repo.isPrivate ? 'Private' : 'Public' }}</span>
+            </div>
+            @if (repo.description) {
+              <p class="profile-repo-card__desc">{{ repo.description }}</p>
+            }
+            <div class="profile-repo-card__meta">
+              <span class="profile-repo-card__date">Updated {{ repo.createdAt | date:'mediumDate' }}</span>
+            </div>
+          </div>
+        } @empty {
+          <div class="profile-repos__empty">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+            </svg>
+            <p>No repositories yet.</p>
+          </div>
+        }
+      </div>
+    </main>
+  }
+</div>

@@ -10,6 +10,7 @@ import { Blob } from './features/repository/blob/blob';
 import { Commits } from './features/repository/details/commits/commits';
 import { Code } from './features/repository/details/code/code';
 import { CommitDetails } from './features/repository/details/commit-details/commit-details';
+import { Profile } from './features/profile/profile';
 
 export const routes: Routes = [
   { path: '', component: Landing },
@@ -27,4 +28,5 @@ export const routes: Routes = [
     ]
   },
   { path: 'repository/:username/:repoName/blob', component: Blob, canActivate: [dashboardGuard] },
+  { path: 'profile/:username', component: Profile },
 ];

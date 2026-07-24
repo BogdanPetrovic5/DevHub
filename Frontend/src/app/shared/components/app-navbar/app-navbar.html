@@ -43,15 +43,17 @@
     </button>
 
     <div class="navbar__avatar" (click)="toggleProfile()">
-      <div class="navbar__avatar-circle" [class.navbar__avatar-circle--active]="profileOpen()">B</div>
+      <div class="navbar__avatar-circle" [class.navbar__avatar-circle--active]="profileOpen()">
+        {{ currentUser()?.username?.[0]?.toUpperCase() ?? '?' }}
+      </div>
 
       @if (profileOpen()) {
         <div class="profile-dropdown">
           <div class="profile-dropdown__header">
-            <div class="profile-dropdown__avatar">B</div>
+            <div class="profile-dropdown__avatar">{{ currentUser()?.username?.[0]?.toUpperCase() ?? '?' }}</div>
             <div>
-              <div class="profile-dropdown__name">Bogdan</div>
-              <div class="profile-dropdown__handle">&#64;bogdanpetrovic</div>
+              <div class="profile-dropdown__name">{{ currentUser()?.username ?? '' }}</div>
+              <div class="profile-dropdown__handle">{{ currentUser()?.email ?? '' }}</div>
             </div>
           </div>
 
@@ -64,7 +66,7 @@
             </svg>
             Dashboard
           </a>
-          <a href="#" class="profile-dropdown__item" (click)="closeProfile()">
+          <a class="profile-dropdown__item" (click)="navigate(`profile/${currentUser()?.username}`)">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
               <circle cx="12" cy="7" r="4"/>
@@ -151,10 +153,10 @@
   </button>
 
   <div class="drawer__profile">
-    <div class="drawer__avatar">B</div>
+    <div class="drawer__avatar">{{ currentUser()?.username?.[0]?.toUpperCase() ?? '?' }}</div>
     <div class="drawer__user-info">
-      <span class="drawer__username">Bogdan</span>
-      <span class="drawer__handle">&#64;bogdanpetrovic</span>
+      <span class="drawer__username">{{ currentUser()?.username ?? '' }}</span>
+      <span class="drawer__handle">{{ currentUser()?.email ?? '' }}</span>
     </div>
   </div>
 </div>

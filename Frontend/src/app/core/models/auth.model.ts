@@ -17,3 +17,8 @@ export interface AuthResponse {
   accessToken: string;
   refreshToken: string;
 }
+
+export interface MeDto {
+  username: string;
+  email: string;
+}
