@@ -1,4 +1,4 @@
-import { Component, signal, HostListener, inject } from '@angular/core';
+import { Component, signal, HostListener, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth/auth-service';
 
@@ -8,35 +8,33 @@ import { AuthService } from '../../../core/services/auth/auth-service';
   templateUrl: './app-navbar.html',
   styleUrl: './app-navbar.scss',
 })
-export class AppNavbar {
+export class AppNavbar implements OnInit {
   private _router = inject(Router);
   private _authService = inject(AuthService);
-  
+
+  currentUser = this._authService.currentUser;
   drawerOpen = signal(false);
   profileOpen = signal(false);
-  navigate(route:string){
-    this._router.navigate(['repository/new'])
-  }
-  toggleDrawer()  { 
-    this.drawerOpen.update(v => !v); }
 
-  closeDrawer()   { 
-    this.drawerOpen.set(false); 
+  ngOnInit(): void {
+    if (!this.currentUser()) {
+      this._authService.getMe().subscribe();
+    }
   }
-  toggleProfile() { 
-    this.profileOpen.update(v => !v); 
+
+  navigate(route: string) {
+    this._router.navigate([route]);
   }
-  closeProfile()  { 
-    this.profileOpen.set(false); 
-  }
+
+  toggleDrawer()  { this.drawerOpen.update(v => !v); }
+  closeDrawer()   { this.drawerOpen.set(false); }
+  toggleProfile() { this.profileOpen.update(v => !v); }
+  closeProfile()  { this.profileOpen.set(false); }
 
   logout() {
     this._authService.logout().subscribe({
-     next:()=>{
-        this._router.navigate(['auth'])
-     },error:(err)=>{
-        console.log(err.error.message)
-     }
+      next: () => { this._router.navigate(['auth']); },
+      error: (err) => { console.log(err.error.message); }
     });
     this.closeProfile();
     this.closeDrawer();
