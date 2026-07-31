@@ -17,7 +17,7 @@ namespace Backend.Interfaces.Repository
         Task<RepoCommit?> GetLatestCommit(Guid repoId);
 
         Task<List<RepoCommit>> GetRecentCommits(Guid userId);
-
+        Task<Repo?> GetByID(Guid repoId);
         Task SaveUpload(List<RepoFile> files, RepoCommit commit, List<RepoCommitFile> commitFiles);
         Task<RepoFile?> GetFileContent(Guid repoId, string path);
         Task<List<RepoCommit>?> GetRepoCommits(Guid repoId);

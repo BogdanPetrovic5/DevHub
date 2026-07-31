@@ -6,6 +6,7 @@ using Backend.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.IO.Compression;
 using System.Security.Claims;
 
 namespace Backend.Controllers
@@ -36,6 +37,39 @@ namespace Backend.Controllers
             {
                 return BadRequest(repoResponse);
             }
+        }
+        [Authorize]
+        [HttpGet("{username}/{repoName}/clone")]
+        public async Task<ActionResult> CloneRepo(string username, string repoName)
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            Guid? userId = userIdClaim != null ? Guid.Parse(userIdClaim.Value) : null;
+            try
+            {
+                CloneDto? cloneResponse = await _repoService.GetAllFiles(username, repoName, userId);
+                if (cloneResponse?.Files == null) return NotFound();
+                using var memoryStream = new MemoryStream();
+                using (var zip = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
+                {
+                    foreach (var file in cloneResponse.Files)
+                    {
+                        var entry = zip.CreateEntry(file.Path, CompressionLevel.Fastest);
+                        using var streamWriter = new StreamWriter(entry.Open());
+                        await streamWriter.WriteAsync(file.Content);
+                    }
+                }
+                memoryStream.Position = 0;
+                Response.Headers.Append("X-Repo-Id", cloneResponse.RepoId.ToString());
+            
+                return File(memoryStream.ToArray(), "application/zip", "repo.zip");
+            }
+            catch (RepoAccessDenied ex) {
+                return StatusCode(403, new { message = ex.Message });
+            }
+            
+            
+          
+
         }
         [Authorize]
         [HttpGet("user")]

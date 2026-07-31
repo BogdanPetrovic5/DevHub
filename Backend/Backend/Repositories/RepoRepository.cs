@@ -155,15 +155,19 @@ namespace Backend.Repositories
                 .ToListAsync();
         }
 
-        public Task<List<RepoCommit>> GetRecentCommits(Guid userId)
+        public async Task<List<RepoCommit>> GetRecentCommits(Guid userId)
         {
-            return _context.RepoCommits
+            return await _context.RepoCommits
                 .Include(c => c.User)
                 .Include(c => c.Repository)
                 .Where(c => c.UserId == userId)
                 .OrderByDescending(c => c.CreatedAt)
                 .Take(5)
                 .ToListAsync();
+        }
+        public async Task<Repo?> GetByID(Guid repoId)
+        {
+            return await _context.Repositories.FindAsync(repoId);
         }
     }
 }
