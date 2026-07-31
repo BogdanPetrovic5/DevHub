@@ -151,7 +151,7 @@ namespace Backend.Services.Repository
 
         public async Task<RepoResponse> Upload(Guid repoId, Guid userId, RepoUploadRequest uploadRequest)
         {
-           var repo = await _repoRepository.GetByIdAndOwner(repoId, userId);
+            var repo = await _repoRepository.GetByIdAndOwner(repoId, userId);
             if (repo == null)
             {
                 return new RepoResponse
@@ -176,7 +176,8 @@ namespace Backend.Services.Repository
             using var zip = new System.IO.Compression.ZipArchive(stream, System.IO.Compression.ZipArchiveMode.Read);
 
             var files = new List<RepoFile>();
-            foreach (var entry in zip.Entries) { 
+            foreach (var entry in zip.Entries)
+            {
                 if (string.IsNullOrEmpty(entry.Name)) continue;
                 var segments = entry.FullName.Split('/');
                 if (segments.Any(s => s == ".git" || s == "node_modules"))
@@ -197,7 +198,7 @@ namespace Backend.Services.Repository
 
                 });
 
-            
+
 
             }
             var commit = new RepoCommit
@@ -284,7 +285,7 @@ namespace Backend.Services.Repository
         public async Task<RepoResponse> Push(Guid repoId, Guid userId, PushRequestDto pushRequest)
         {
             Repo? repo = await _repoRepository.GetByIdAndOwner(repoId, userId);
-            if(repo == null)
+            if (repo == null)
             {
                 return new RepoResponse
                 {
@@ -292,10 +293,11 @@ namespace Backend.Services.Repository
                     Message = "Repository not found."
                 };
             }
-          
+
 
             List<RepoFile> existingFiles = await _repoRepository.GetFiles(repoId);
-            if(existingFiles == null) { 
+            if (existingFiles == null)
+            {
                 return new RepoResponse
                 {
                     Success = false,
@@ -307,12 +309,13 @@ namespace Backend.Services.Repository
             List<RepoFile> toInsert = new List<RepoFile>();
             List<RepoFile> toUpdate = new List<RepoFile>();
             List<RepoCommitFile> commitFiles = new List<RepoCommitFile>();
-            foreach (var file in pushRequest.Files) { 
+            foreach (var file in pushRequest.Files)
+            {
                 var newHash = ComputeHash(file.Content);
                 var oldHash = existingFilesMap.TryGetValue(file.Path, out var existingFile) ? existingFile.Hash : null;
-                if(newHash != oldHash)
+                if (newHash != oldHash)
                 {
-                    if(existingFile != null)
+                    if (existingFile != null)
                     {
                         existingFile.Content = file.Content;
                         existingFile.Hash = newHash;
@@ -343,11 +346,11 @@ namespace Backend.Services.Repository
                     }
                 }
             }
-            
+
             var pushSet = pushRequest.Files.Select(f => f.Path).ToHashSet();
             List<RepoFile> toDelete = existingFiles.Where(f => !pushSet.Contains(f.Path)).ToList();
 
-            foreach(var file in toDelete)
+            foreach (var file in toDelete)
             {
                 commitFiles.Add(new RepoCommitFile
                 {
@@ -394,7 +397,7 @@ namespace Backend.Services.Repository
                 entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30);
                 return await _repoRepository.GetCommitFilesByCommitId(commitId);
             });
-            if(repoCommitFiles == null || !repoCommitFiles.Any()) return null;
+            if (repoCommitFiles == null || !repoCommitFiles.Any()) return null;
             var first = repoCommitFiles.First();
             CommitFilesDto? commitFilesDto = new CommitFilesDto
             {
@@ -434,10 +437,22 @@ namespace Backend.Services.Repository
             .ToList();
 
 
-         
-            
-         
 
+
+
+
+        }
+
+        public async Task<CloneDto?> GetAllFiles(string username, string repoName, Guid? userId)
+        {
+            Repo? repo = await _repoRepository.GetByUsernameAndName(username, repoName);
+            if (repo == null) return null;
+            if (repo.IsPrivate && repo.UserId != userId)
+            {
+                throw new RepoAccessDenied();
+            }
+            List<RepoFile> files = await _repoRepository.GetFiles(repo.Id);
+            return new CloneDto { Files = files, RepoId = repo.Id, Name = repo.Name, OwnerUsername = repo.User.Username };
         }
     }
 }
