@@ -49,6 +49,7 @@ A GitHub-inspired developer platform built with Angular 17+ and .NET 10.
 | GET | /api/repo/activity | 🔒 | Get recent commit activity grouped by repo |
 | GET | /api/auth/me | 🔒 | Get current authenticated user (username, email) |
 | GET | /api/user/{username} | Public* | Get public profile with repos and stats |
+| GET | /api/repo/{username}/{repoName}/clone | 🔒 | Download all repository files as a ZIP |
 
 > `*` Public = accessible without token, but private repositories require authentication
 > `*` CLI only = requires `User-Agent: DevHubCLI`
@@ -403,6 +404,23 @@ Get a user's public profile.
 ```
 
 **Response `404 Not Found`** — user not found
+
+---
+
+### GET /api/repo/{username}/{repoName}/clone 🔒
+Download all files in a repository as a ZIP archive.
+
+**Response `200 OK`** — `application/zip`
+
+Returns a ZIP file containing all repository files preserving folder structure.
+
+Response header includes:
+```
+X-Repo-Id: {guid}
+```
+
+**Response `404 Not Found`** — repository not found  
+**Response `403 Forbidden`** — private repository, not the owner
 
 ---
 
