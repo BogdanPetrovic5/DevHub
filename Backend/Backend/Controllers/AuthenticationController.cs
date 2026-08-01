@@ -59,7 +59,7 @@ namespace Backend.Controllers
             if (!userAgent.StartsWith("DevHubCLI"))
                 return Forbid();
 
-            var result = await _authenticationService.Login(loginDto);
+            var result = await _authenticationService.Login(loginDto, true);
             if (!result.Success) return Unauthorized(result);
             return Ok(new { accessToken = result.AccessToken, refreshToken = result.RefreshToken });
         }

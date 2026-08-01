@@ -14,7 +14,7 @@ namespace Backend.Services.Security
         {
             _configuration = configuration;
         }
-        public string GenerateAccessToken(Models.User user)
+        public string GenerateAccessToken(Models.User user, bool isCli = false)
         {
             var claims = new[]
            {
@@ -29,7 +29,7 @@ namespace Backend.Services.Security
                     issuer: _configuration["Jwt:Issuer"],
                     audience: _configuration["Jwt:Audience"],
                     claims: claims,
-                    expires: DateTime.UtcNow.AddMinutes(15),
+                    expires: isCli ? DateTime.UtcNow.AddDays(7) : DateTime.UtcNow.AddMinutes(15),
                     signingCredentials: credentials
 
             );

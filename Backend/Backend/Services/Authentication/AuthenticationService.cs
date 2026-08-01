@@ -52,14 +52,14 @@ namespace Backend.Services.Authentication
             
         }
 
-        public async Task<AuthResponse> Login(LoginDto loginDto)
+        public async Task<AuthResponse> Login(LoginDto loginDto,bool isCli)
         {
             Models.User? user = await _authenticationRepository.GetUserByEmail(loginDto.Email);
 
             if (user == null || !_passwordEncoder.VerifyPassword(loginDto.Password, user.PasswordHash))
                 return new AuthResponse { Success = false, Message = "Invalid email or password" };
 
-            string accessToken = _jwtService.GenerateAccessToken(user);
+            string accessToken = _jwtService.GenerateAccessToken(user, isCli);
             string refreshToken = _jwtService.GenerateRefreshToken();
             await _refreshTokenRepository.SaveRefreshToken(user.Id, refreshToken, loginDto.RememberMe);
 
