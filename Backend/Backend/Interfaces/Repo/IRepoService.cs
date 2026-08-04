@@ -16,5 +16,6 @@ namespace Backend.Interfaces.Repository
         Task<CommitFilesDto?> GetCommitFiles(string username, string repoName, Guid commitId, Guid? userId);
         Task<List<ActivityDto>> GetActivity(Guid userId);
         Task<CloneDto?> GetAllFiles(string username, string repoName, Guid? userId);
+        Task<PullResponseDto> Pull(Guid repoId, Guid userId, PullRequestDto pullRequest);
     }
 }

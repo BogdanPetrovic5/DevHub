@@ -182,5 +182,25 @@ namespace Backend.Controllers
             List<ActivityDto> activities = await _repoService.GetActivity(userId);
             return Ok(activities);
         }
+
+        [Authorize]
+        [HttpPost("{repoId}/pull")]
+        public async Task<ActionResult> Pull(Guid repoId, [FromBody] PullRequestDto pullRequest)
+        {
+            var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            try
+            {
+                PullResponseDto result = await _repoService.Pull(repoId, userId, pullRequest);
+                return Ok(result);
+            }
+            catch (RepoNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (RepoAccessDenied ex)
+            {
+                return StatusCode(403, new { message = ex.Message });
+            }
+        }
     }
 }
