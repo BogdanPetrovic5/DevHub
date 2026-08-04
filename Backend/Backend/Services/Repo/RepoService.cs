@@ -454,5 +454,46 @@ namespace Backend.Services.Repository
             List<RepoFile> files = await _repoRepository.GetFiles(repo.Id);
             return new CloneDto { Files = files, RepoId = repo.Id, Name = repo.Name, OwnerUsername = repo.User.Username };
         }
+
+        public async Task<PullResponseDto> Pull(Guid repoId, Guid userId, PullRequestDto pullRequest)
+        {
+            Repo? repo = await _repoRepository.GetByID(repoId);
+            if(repo == null)
+            {
+                throw new RepoNotFoundException();
+            }
+            if(repo.IsPrivate && repo.UserId != userId)
+            {
+                throw new RepoAccessDenied();
+            }
+            List<RepoFile> existingFiles = await _repoRepository.GetFiles(repoId);
+            PullResponseDto pullResponse = new PullResponseDto();
+            foreach (RepoFile file in existingFiles) {
+                if(file.Path == null) continue;
+
+                var localFile = pullRequest.Files.FirstOrDefault(f => f.Path == file.Path);
+
+                if (localFile != null && file.Hash != localFile.Hash)
+                {
+                    pullResponse.Modified.Add(new PullFileResponseDto
+                    {
+                        Path = file.Path,
+                        Content = file.Content
+                    });
+                }
+                if(!pullRequest.Files.Any(f => f.Path == file.Path))
+                {
+                    pullResponse.Added.Add(new PullFileResponseDto
+                    {
+                        Path = file.Path,
+                        Content = file.Content
+                    });
+                }
+            }
+            var serverPaths = existingFiles.Where(f => f.Path != null).Select(f => f.Path!).ToHashSet();
+            pullResponse.Deleted = pullRequest.Files.Where(f => f.Path != null && !serverPaths.Contains(f.Path)).Select(f => f.Path!).ToList();
+
+            return pullResponse;
+        }
     }
 }
