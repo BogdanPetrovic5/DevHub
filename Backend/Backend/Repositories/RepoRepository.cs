@@ -120,14 +120,15 @@ namespace Backend.Repositories
             return await _context.RepoCommits.Include(rc=>rc.User).Where(rc => rc.RepositoryId == repoId).OrderByDescending(rc => rc.CreatedAt).ToListAsync();
         }
 
-        public async Task SavePush(List<RepoFile> toInsert, List<RepoFile> toUpdate, List<RepoFile> toDelete, RepoCommit repoCommit, List<RepoCommitFile> commitFiles)
+        public async Task SavePush(List<RepoFile> toInsert, List<RepoFile> toUpdate, List<string> toDelete, RepoCommit repoCommit, List<RepoCommitFile> commitFiles)
         {
             using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
+                List<RepoFile> filesToDelete = await _context.RepoFiles.Where(rf => rf.RepositoryId == repoCommit.RepositoryId && toDelete.Contains(rf.Path)).ToListAsync();
                 await _context.RepoFiles.AddRangeAsync(toInsert);
                 _context.RepoFiles.UpdateRange(toUpdate);
-                _context.RepoFiles.RemoveRange(toDelete);
+                _context.RepoFiles.RemoveRange(filesToDelete);
                 await _context.RepoCommits.AddAsync(repoCommit);
                 await _context.SaveChangesAsync();
 
