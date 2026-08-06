@@ -295,70 +295,61 @@ namespace Backend.Services.Repository
             }
 
 
-            List<RepoFile> existingFiles = await _repoRepository.GetFiles(repoId);
-            if (existingFiles == null)
-            {
-                return new RepoResponse
-                {
-                    Success = false,
-                    Message = "Failed to retrieve existing files."
-                };
-            }
-            var existingFilesMap = existingFiles.ToDictionary(f => f.Path);
-
+       
+      
             List<RepoFile> toInsert = new List<RepoFile>();
             List<RepoFile> toUpdate = new List<RepoFile>();
+            List<string> toDelete = new List<string>();
+            Dictionary<string, RepoFile> existingFiles = (await _repoRepository.GetFiles(repoId)).ToDictionary(f => f.Path);
             List<RepoCommitFile> commitFiles = new List<RepoCommitFile>();
-            foreach (var file in pushRequest.Files)
+            foreach (var file in pushRequest.Added)
             {
-                var newHash = ComputeHash(file.Content);
-                var oldHash = existingFilesMap.TryGetValue(file.Path, out var existingFile) ? existingFile.Hash : null;
-                if (newHash != oldHash)
+                
+                toInsert.Add(new RepoFile
                 {
-                    if (existingFile != null)
-                    {
-                        existingFile.Content = file.Content;
-                        existingFile.Hash = newHash;
-                        toUpdate.Add(existingFile);
-
-                        commitFiles.Add(new RepoCommitFile
-                        {
-                            Path = file.Path,
-                            Content = file.Content,
-                            ChangeType = "Modified",
-                        });
-                    }
-                    else
-                    {
-                        toInsert.Add(new RepoFile
-                        {
-                            Path = file.Path,
-                            Content = file.Content,
-                            Hash = newHash,
-                            RepositoryId = repoId
-                        });
-                        commitFiles.Add(new RepoCommitFile
-                        {
-                            Path = file.Path,
-                            Content = file.Content,
-                            ChangeType = "Added",
-                        });
-                    }
-                }
-            }
-
-            var pushSet = pushRequest.Files.Select(f => f.Path).ToHashSet();
-            List<RepoFile> toDelete = existingFiles.Where(f => !pushSet.Contains(f.Path)).ToList();
-
-            foreach (var file in toDelete)
-            {
+                    Path = file.Path,
+                    Content = file.Content,
+                    Hash = file.Hash,
+                    RepositoryId = repoId
+                });
                 commitFiles.Add(new RepoCommitFile
                 {
                     Path = file.Path,
                     Content = file.Content,
-                    ChangeType = "Deleted",
+                    ChangeType = "Added"
                 });
+
             }
+            foreach(var file in pushRequest.Modified)
+            {
+                if(existingFiles.TryGetValue(file.Path, out var existingFile))
+                {
+                    existingFile.Content = file.Content;
+                    existingFile.Hash = file.Hash;
+                    toUpdate.Add(existingFile);
+                    commitFiles.Add(new RepoCommitFile
+                    {
+                        Path = file.Path,
+                        Content = file.Content,
+                        ChangeType = "Modified"
+                    });
+                }
+            }
+            foreach(var file in pushRequest.Deleted)
+            {
+               if(existingFiles.TryGetValue(file, out var existingFile))
+                {
+                    toDelete.Add(existingFile.Path);
+                    commitFiles.Add(new RepoCommitFile
+                    {
+                        Path = existingFile.Path,
+                        Content = existingFile.Content,
+                        ChangeType = "Deleted"
+                    });
+                }
+            }
+      
+        
             if (toInsert.Count == 0 && toUpdate.Count == 0 && toDelete.Count == 0)
             {
                 return new RepoResponse { Success = true, Message = "Nothing to push, everything up to date." };
