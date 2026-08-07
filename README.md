@@ -41,7 +41,8 @@ A GitHub-inspired developer platform built with Angular 17+ and .NET 10.
 | POST | /api/repo/new | 🔒 | Create a new repository |
 | GET | /api/repo/user | 🔒 | Get all repositories for the authenticated user |
 | POST | /api/repo/{repoId}/upload | 🔒 | Upload a ZIP file as a new commit |
-| PUT | /api/repo/{repoId}/push | 🔒 | Push changes with change detection |
+| PUT | /api/repo/{repoId}/push | 🔒 | Push modified/added/deleted files as a new commit |
+| POST | /api/repo/{repoId}/pull | 🔒 | Pull changes — returns only modified, added, or deleted files based on client hashes |
 | GET | /api/repo/{username}/{repoName} | Public* | Get repository details and file tree |
 | GET | /api/repo/{username}/{repoName}/blob | Public* | Get file content |
 | GET | /api/repo/{username}/{repoName}/commits | Public* | Get commit history |
@@ -232,15 +233,19 @@ Upload a ZIP file as a new commit. Extracts files, ignores `.git` and `node_modu
 ---
 
 ### PUT /api/repo/{repoId}/push 🔒
-Push local files to a repository. Compares SHA-256 hashes — only modified, added, or deleted files are recorded. No commit is created if nothing changed.
+Push changes to a repository. The client (CLI) performs diff locally using a local index and sends only modified, added, or deleted files. The server records the changes and creates a commit.
 
 **Body**
 ```json
 {
   "message": "string",
-  "files": [
-    { "path": "string", "content": "string" }
-  ]
+  "added": [
+    { "path": "string", "content": "string", "hash": "string" }
+  ],
+  "modified": [
+    { "path": "string", "content": "string", "hash": "string" }
+  ],
+  "deleted": ["string"]
 }
 ```
 
@@ -258,6 +263,36 @@ Push local files to a repository. Compares SHA-256 hashes — only modified, add
 ```json
 { "success": false, "message": "Repository not found." }
 ```
+
+---
+
+### POST /api/repo/{repoId}/pull 🔒
+Pull changes from a repository. The client sends its current file hashes — the server returns only files that differ (modified or new on server) and paths that were deleted on the server.
+
+**Body**
+```json
+{
+  "files": [
+    { "path": "string", "hash": "string" }
+  ]
+}
+```
+
+**Response `200 OK`**
+```json
+{
+  "modified": [
+    { "path": "string", "content": "string" }
+  ],
+  "added": [
+    { "path": "string", "content": "string" }
+  ],
+  "deleted": ["string"]
+}
+```
+
+**Response `404 Not Found`** — repository not found  
+**Response `403 Forbidden`** — private repository, not the owner
 
 ---
 
