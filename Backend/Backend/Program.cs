@@ -10,6 +10,7 @@ using Backend.Services.Repository;
 using Backend.Services.Security;
 using Backend.Services.User;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
@@ -43,6 +44,34 @@ builder.Services.AddCors(options =>
         .AllowAnyMethod()
         .AllowCredentials();
 
+    });
+});
+builder.Services.AddRateLimiter(options =>
+{
+    options.AddFixedWindowLimiter("login", o =>
+    {
+        o.PermitLimit = 5;
+        o.Window = TimeSpan.FromMinutes(1);
+    });
+    options.AddFixedWindowLimiter("register", o =>
+    {
+        o.PermitLimit = 5;
+        o.Window = TimeSpan.FromMinutes(1);
+    });
+    options.AddFixedWindowLimiter("push", o =>
+    {
+        o.PermitLimit = 10;
+        o.Window = TimeSpan.FromMinutes(1);
+    });
+     options.AddFixedWindowLimiter("pull", o =>
+     {
+         o.PermitLimit = 10;
+         o.Window = TimeSpan.FromMinutes(1);
+     });
+    options.AddFixedWindowLimiter("clone", o =>
+    {
+        o.PermitLimit = 10;
+        o.Window = TimeSpan.FromMinutes(1);
     });
 });
 builder.Services.AddAuthentication(options =>
