@@ -6,6 +6,7 @@ using Backend.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using System.IO.Compression;
 using System.Security.Claims;
 
@@ -38,6 +39,7 @@ namespace Backend.Controllers
                 return BadRequest(repoResponse);
             }
         }
+        [EnableRateLimiting("clone")]
         [Authorize]
         [HttpGet("{username}/{repoName}/clone")]
         public async Task<ActionResult> CloneRepo(string username, string repoName)
@@ -147,6 +149,7 @@ namespace Backend.Controllers
                 return Forbid();
             }
         }
+        [EnableRateLimiting("push")]
         [Authorize]
         [HttpPut("{repoId}/push")]
         public async Task<ActionResult<RepoResponse>> Push(Guid repoId, [FromBody] PushRequestDto pushRequest)
@@ -182,7 +185,7 @@ namespace Backend.Controllers
             List<ActivityDto> activities = await _repoService.GetActivity(userId);
             return Ok(activities);
         }
-
+        [EnableRateLimiting("pull")]
         [Authorize]
         [HttpPost("{repoId}/pull")]
         public async Task<ActionResult> Pull(Guid repoId, [FromBody] PullRequestDto pullRequest)

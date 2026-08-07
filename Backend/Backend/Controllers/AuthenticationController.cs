@@ -7,6 +7,7 @@ using Backend.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using System.Security.Claims;
 
 namespace Backend.Controllers
@@ -41,6 +42,8 @@ namespace Backend.Controllers
             return Ok(authResponse);
 
         }
+        [EnableRateLimiting("register")]
+
         [HttpPost("register")]
         public async Task<ActionResult<AuthResponse>> Register(RegistrationDto registrationDto)
         {
@@ -52,6 +55,7 @@ namespace Backend.Controllers
 
             return Ok(authResponse);
         }
+        [EnableRateLimiting("login")]
         [HttpPost("cli-login")]
         public async Task<ActionResult> CliLogin([FromBody] LoginDto loginDto)
         {
@@ -63,6 +67,7 @@ namespace Backend.Controllers
             if (!result.Success) return Unauthorized(result);
             return Ok(new { accessToken = result.AccessToken, refreshToken = result.RefreshToken });
         }
+        [EnableRateLimiting("login")]
         [HttpPost("login")]
         public async Task<ActionResult<AuthResponse>> Login(LoginDto loginDto)
         {
