@@ -1,4 +1,5 @@
 using Backend.Data;
+using Backend.Exceptions;
 using Backend.Interfaces.Authentication;
 using Backend.Interfaces.Repository;
 using Backend.Interfaces.Security;

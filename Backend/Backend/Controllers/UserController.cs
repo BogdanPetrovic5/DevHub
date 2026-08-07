@@ -1,5 +1,4 @@
 ﻿using Backend.Dto.User;
-using Backend.Exceptions;
 using Backend.Interfaces.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -23,15 +22,8 @@ namespace Backend.Controllers
             var userIdClaims = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier);
             Guid? userId = userIdClaims != null ? Guid.Parse(userIdClaims.Value) : null;
 
-            try
-            {
-                ProfileDto profile = await _userService.GetProfile(username);
-                return Ok(profile);
-            }
-            catch (UserNotFoundException ex)
-            {
-                return NotFound(new { message = ex.Message });
-            }
+            ProfileDto profile = await _userService.GetProfile(username);
+            return Ok(profile);
         }
     }
 }
