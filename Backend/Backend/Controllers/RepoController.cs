@@ -1,5 +1,4 @@
 ﻿using Backend.Dto.Repository;
-using Backend.Exceptions;
 using Backend.Interfaces.Repository;
 using Backend.Models.Repository;
 using Backend.Responses;
@@ -46,32 +45,23 @@ namespace Backend.Controllers
         {
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
             Guid? userId = userIdClaim != null ? Guid.Parse(userIdClaim.Value) : null;
-            try
-            {
-                CloneDto? cloneResponse = await _repoService.GetAllFiles(username, repoName, userId);
-                if (cloneResponse?.Files == null) return NotFound();
-                using var memoryStream = new MemoryStream();
-                using (var zip = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
-                {
-                    foreach (var file in cloneResponse.Files)
-                    {
-                        var entry = zip.CreateEntry(file.Path, CompressionLevel.Fastest);
-                        using var streamWriter = new StreamWriter(entry.Open());
-                        await streamWriter.WriteAsync(file.Content);
-                    }
-                }
-                memoryStream.Position = 0;
-                Response.Headers.Append("X-Repo-Id", cloneResponse.RepoId.ToString());
-            
-                return File(memoryStream.ToArray(), "application/zip", "repo.zip");
-            }
-            catch (RepoAccessDenied ex) {
-                return StatusCode(403, new { message = ex.Message });
-            }
-            
-            
-          
 
+            CloneDto? cloneResponse = await _repoService.GetAllFiles(username, repoName, userId);
+            if (cloneResponse?.Files == null) return NotFound();
+            using var memoryStream = new MemoryStream();
+            using (var zip = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
+            {
+                foreach (var file in cloneResponse.Files)
+                {
+                    var entry = zip.CreateEntry(file.Path, CompressionLevel.Fastest);
+                    using var streamWriter = new StreamWriter(entry.Open());
+                    await streamWriter.WriteAsync(file.Content);
+                }
+            }
+            memoryStream.Position = 0;
+            Response.Headers.Append("X-Repo-Id", cloneResponse.RepoId.ToString());
+
+            return File(memoryStream.ToArray(), "application/zip", "repo.zip");
         }
         [Authorize]
         [HttpGet("user")]
@@ -139,15 +129,8 @@ namespace Backend.Controllers
             var userIdClaims = User.FindFirst(ClaimTypes.NameIdentifier);
             Guid? userId = userIdClaims != null ? Guid.Parse(userIdClaims.Value) : null;
 
-            try
-            {
-                List<RepoCommitSummaryDto>? repoCommitSummaryDtos = await _repoService.GetRepoCommits(userId, username, repoName);
-                return Ok(repoCommitSummaryDtos);
-            }
-            catch (RepoAccessDenied)
-            {
-                return Forbid();
-            }
+            List<RepoCommitSummaryDto>? repoCommitSummaryDtos = await _repoService.GetRepoCommits(userId, username, repoName);
+            return Ok(repoCommitSummaryDtos);
         }
         [EnableRateLimiting("push")]
         [Authorize]
@@ -166,15 +149,8 @@ namespace Backend.Controllers
             var userIdClaims = User.FindFirst(ClaimTypes.NameIdentifier);
             Guid? userId = userIdClaims != null ? Guid.Parse(userIdClaims.Value) : null;
 
-            try
-            {
-                CommitFilesDto? commitFiles = await _repoService.GetCommitFiles(username, repoName, commitId, userId);
-                return commitFiles;
-            }
-            catch (RepoAccessDenied)
-            {
-                return Forbid();
-            }
+            CommitFilesDto? commitFiles = await _repoService.GetCommitFiles(username, repoName, commitId, userId);
+            return commitFiles;
         }
 
         [Authorize]
@@ -191,19 +167,8 @@ namespace Backend.Controllers
         public async Task<ActionResult> Pull(Guid repoId, [FromBody] PullRequestDto pullRequest)
         {
             var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
-            try
-            {
-                PullResponseDto result = await _repoService.Pull(repoId, userId, pullRequest);
-                return Ok(result);
-            }
-            catch (RepoNotFoundException ex)
-            {
-                return NotFound(new { message = ex.Message });
-            }
-            catch (RepoAccessDenied ex)
-            {
-                return StatusCode(403, new { message = ex.Message });
-            }
+            PullResponseDto result = await _repoService.Pull(repoId, userId, pullRequest);
+            return Ok(result);
         }
     }
 }
