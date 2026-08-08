@@ -28,6 +28,8 @@ builder.Services.AddScoped<IRepoService, RepoService>();
 builder.Services.AddScoped<IRepoRepository, RepoRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
 // Add services to the container.
 builder.Services.AddDbContext<DevHubDbContext>(options => { options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")); });
     
@@ -121,6 +123,7 @@ app.Use(async (context, next) =>
     context.Response.Headers.Append("Content-Security-Policy", "frame-ancestors 'none'");
     await next();
 });
+app.UseExceptionHandler();
 app.UseCors();
 app.UseHttpsRedirection();
 
