@@ -1,6 +1,7 @@
 using Azure.Core;
 using Backend.Dto.Repository;
 using Backend.Exceptions;
+using Backend.Exceptions.Repository;
 using Backend.Interfaces.Repository;
 using Backend.Models.Commit;
 using Backend.Models.Repository;
@@ -266,7 +267,7 @@ namespace Backend.Services.Repository
             if (repo == null) return null;
             if (repo.IsPrivate && userId != repo.UserId)
             {
-                throw new RepoAccessDenied();
+                throw new RepoAccessDeniedException();
             }
             List<RepoCommit>? repoCommits = await _cache.GetOrCreateAsync($"repo-commits-{repo.Id}", async entry =>
             {
@@ -381,7 +382,7 @@ namespace Backend.Services.Repository
             if (repo == null) return null;
             if (repo.IsPrivate && repo.UserId != userId)
             {
-                throw new RepoAccessDenied();
+                throw new RepoAccessDeniedException();
             }
             List<RepoCommitFile>? repoCommitFiles = await _cache.GetOrCreateAsync($"commit-files-{commitId}", async entry =>
             {
@@ -440,7 +441,7 @@ namespace Backend.Services.Repository
             if (repo == null) return null;
             if (repo.IsPrivate && repo.UserId != userId)
             {
-                throw new RepoAccessDenied();
+                throw new RepoAccessDeniedException();
             }
             List<RepoFile> files = await _repoRepository.GetFiles(repo.Id);
             return new CloneDto { Files = files, RepoId = repo.Id, Name = repo.Name, OwnerUsername = repo.User.Username };
@@ -455,7 +456,7 @@ namespace Backend.Services.Repository
             }
             if(repo.IsPrivate && repo.UserId != userId)
             {
-                throw new RepoAccessDenied();
+                throw new RepoAccessDeniedException();
             }
             List<RepoFile> existingFiles = await _repoRepository.GetFiles(repoId);
             PullResponseDto pullResponse = new PullResponseDto();

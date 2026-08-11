@@ -1,5 +1,6 @@
 ﻿using Backend.Dto.User;
 using Backend.Exceptions;
+using Backend.Exceptions.User;
 using Backend.Interfaces.User;
 using Backend.Utility;
 using System.Threading.Tasks;
