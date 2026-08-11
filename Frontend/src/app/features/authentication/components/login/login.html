@@ -20,6 +20,8 @@
             @if (loginForm.get('email')?.hasError('required')) { Email is required }
             @if (loginForm.get('email')?.hasError('email'))    { Enter a valid email }
           </span>
+        } @else if (validationErrorValue('Email')) {
+          <span class="form-error">{{ validationErrorValue('Email') }}</span>
         }
     </div>
 
@@ -39,8 +41,10 @@
       @if(loginForm.get('password')?.invalid && loginForm.get('password')?.touched){
            <span class="form-error">
             @if (loginForm.get('password')?.hasError('required')) { Password is required }
-            @if (loginForm.get('password')?.hasError('minLength'))    { Password should be at least 6 char long! }
+            @if (loginForm.get('password')?.hasError('minlength'))    { Password should be at least 6 char long! }
           </span>
+      } @else if (validationErrorValue('Password')) {
+        <span class="form-error">{{ validationErrorValue('Password') }}</span>
       }
     </div>
 
