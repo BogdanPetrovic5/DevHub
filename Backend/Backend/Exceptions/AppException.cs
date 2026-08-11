@@ -1,8 +1,8 @@
 ﻿namespace Backend.Exceptions
 {
-    public class AppException : Exception
+    public abstract class AppException : Exception
     {
-        public virtual int StatusCode {  get;}
-        protected AppException(string message) : base(message) { }
+        public abstract int StatusCode {  get;}
+         public AppException(string message) : base(message) { }
     }
 }
