@@ -77,5 +77,8 @@
         }
       </div>
     </main>
+
+  }@else if(error(); as e) {
+    <app-error-state class="error-state" [status]="e.status" [message]="e.message"></app-error-state>
   }
 </div>

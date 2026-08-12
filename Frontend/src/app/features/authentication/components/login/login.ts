@@ -1,6 +1,6 @@
 import { Component, inject, output, signal } from '@angular/core';
 import { AuthService } from '../../../../core/services/auth/auth-service';
-import { FormBuilder, Validators, ɵInternalFormsSharedModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, Validators, ɵInternalFormsSharedModule, ReactiveFormsModule, ValidationErrors } from '@angular/forms';
 import { LoginRequest } from '../../../../core/models/auth.model';
 import { Router } from '@angular/router';
 
@@ -19,18 +19,25 @@ export class Login {
 
   isLoading = signal(false);
   errorMessage = signal<string | null>(null);
+  validationErrors = signal<ValidationErrors | null>(null);
 
   loginForm = this._fb.group({
-    email: ['', Validators.required, Validators.email],
+    email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(6)]],
     rememberMe: [false]
   })
 
+  validationErrorValue(key: string): string | null {
+    const errors = this.validationErrors();
+    return errors ? errors[key]?.[0] || null : null;
+  }
+
   login(){
     if(this.loginForm.invalid) return;
 
-    this.isLoading.set(false);
+    this.isLoading.set(true);
     this.errorMessage.set(null);
+    this.validationErrors.set(null);
     const loginData = this.loginForm.value as LoginRequest;
 
     this._authService.login(loginData).subscribe({
@@ -41,9 +48,12 @@ export class Login {
         }
       },
       error:(err)=>{
-        console.log(err)
         this.isLoading.set(false);
-        this.errorMessage.set(err.error?.message ?? 'Login failed')
+        if (err.error?.errors) {
+          this.validationErrors.set(err.error.errors);
+        } else {
+          this.errorMessage.set(err.error?.message ?? 'Login failed')
+        }
       }
     })
   }

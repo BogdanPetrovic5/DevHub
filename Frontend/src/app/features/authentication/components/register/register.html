@@ -16,6 +16,8 @@
       </div>
       @if (registerForm.get('username')?.invalid && registerForm.get('username')?.touched) {
         <span class="form-error">Username is required</span>
+      } @else if (validationErrorValue('Username')) {
+        <span class="form-error">{{ validationErrorValue('Username') }}</span>
       }
     </div>
 
@@ -33,6 +35,8 @@
           @if (registerForm.get('email')?.hasError('required')) { Email is required }
           @if (registerForm.get('email')?.hasError('email'))    { Enter a valid email }
         </span>
+      } @else if (validationErrorValue('Email')) {
+        <span class="form-error">{{ validationErrorValue('Email') }}</span>
       }
     </div>
 
@@ -44,6 +48,8 @@
         </div>
         @if (registerForm.get('firstName')?.invalid && registerForm.get('firstName')?.touched) {
           <span class="form-error">Required</span>
+        } @else if (validationErrorValue('FirstName')) {
+          <span class="form-error">{{ validationErrorValue('FirstName') }}</span>
         }
       </div>
       <div class="form-group">
@@ -53,6 +59,8 @@
         </div>
         @if (registerForm.get('lastName')?.invalid && registerForm.get('lastName')?.touched) {
           <span class="form-error">Required</span>
+        } @else if (validationErrorValue('LastName')) {
+          <span class="form-error">{{ validationErrorValue('LastName') }}</span>
         }
       </div>
     </div>
@@ -67,10 +75,9 @@
         <input formControlName="password" class="input" [class.input--error]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched" id="reg-password" type="password" placeholder="••••••••" autocomplete="new-password" />
       </div>
       @if (registerForm.get('password')?.invalid && registerForm.get('password')?.touched) {
-        <span class="form-error">
-          @if (registerForm.get('password')?.hasError('required'))  { Password is required }
-          @if (registerForm.get('password')?.hasError('minlength')) { Minimum 6 characters }
-        </span>
+        <span class="form-error">Password is required</span>
+      } @else if (validationErrorValue('Password')) {
+        <span class="form-error">{{ validationErrorValue('Password') }}</span>
       }
     </div>
 
