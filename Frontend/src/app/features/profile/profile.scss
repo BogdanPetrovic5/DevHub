@@ -1,12 +1,13 @@
 .profile-page {
-  display: grid;
-  grid-template-columns: 260px 1fr;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
   gap: 40px;
-  max-width: 1200px;
+  width: 90%;
   margin: 0 auto;
   padding: 40px 32px;
   min-height: calc(100vh - 56px);
-  align-items: start;
+  align-items: center;
 }
 
 .profile-sidebar {
@@ -14,8 +15,9 @@
   flex-direction: column;
   gap: 16px;
   position: sticky;
+  align-self: flex-start;
   top: 24px;
-
+  width: 20%;
   &__avatar {
     width: 100%;
     aspect-ratio: 1;
@@ -91,6 +93,8 @@
 .profile-main {
   display: flex;
   flex-direction: column;
+  align-self: flex-start;
+  width: 80%;
   gap: 16px;
   min-width: 0;
 }
