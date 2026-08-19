@@ -18,7 +18,7 @@ namespace Backend.Services.User
             Backend.Models.User? user = await _userRepository.GetUser(username);
             if (user == null)
             {
-                throw new UserNotFoundException($"User with username '{username}' not found.");
+                throw new UserNotFoundException(username);
             }
             return user.ToDto();
         }
