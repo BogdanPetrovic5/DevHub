@@ -1,10 +1,11 @@
 import { Component, signal, HostListener, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth/auth-service';
+import { Search } from "../search/search";
 
 @Component({
   selector: 'app-app-navbar',
-  imports: [],
+  imports: [Search],
   templateUrl: './app-navbar.html',
   styleUrl: './app-navbar.scss',
 })
