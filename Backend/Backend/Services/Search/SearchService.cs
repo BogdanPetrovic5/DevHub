@@ -13,14 +13,13 @@ namespace Backend.Services.Search
         }
         public async Task<SearchResultDto> SearchAsync(string query, Guid userId)
         {
-            var repos = _searchRepository.SearchRepos(query, userId);
-            var users = _searchRepository.SearchUsers(query);
+            var repos = await _searchRepository.SearchRepos(query, userId);
+            var users = await _searchRepository.SearchUsers(query);
 
-            await Task.WhenAll(repos, users);
             return new SearchResultDto
             {
-                Repositories = repos.Result.Select(r => r.ToSearchDto()).ToList(),
-                Users = users.Result.Select(u => u.ToSearchDto()).ToList()
+                Repositories = repos.Select(r => r.ToSearchDto()).ToList(),
+                Users = users.Select(u => u.ToSearchDto()).ToList()
             };
         }
     }

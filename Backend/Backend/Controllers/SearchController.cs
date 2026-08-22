@@ -14,7 +14,7 @@ namespace Backend.Controllers
         {
             _searchService = searchService;
         }
-        [HttpGet("{q}")]
+        [HttpGet]
         public async Task<IActionResult> Search([FromQuery]string q)
         {
             var userIdClaims = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier);
