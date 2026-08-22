@@ -26,6 +26,7 @@ builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<ICookieService, CookieService>();
 builder.Services.AddScoped<ISearchService, SearchService>();
 builder.Services.AddScoped<ISearchRepository, SearchRepository>();
+
 builder.Services.AddMemoryCache();
 builder.Services.AddScoped<IRepoService, RepoService>();
 builder.Services.AddScoped<IRepoRepository, RepoRepository>();
