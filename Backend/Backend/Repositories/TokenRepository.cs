@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Repositories
 {
-    public class RefreshTokenRepository : IRefreshTokenRepository
+    public class TokenRepository : ITokenRepository
     {
         private readonly DevHubDbContext _context;
 
-        public RefreshTokenRepository(DevHubDbContext context)
+        public TokenRepository(DevHubDbContext context)
         {
             _context = context;
         }

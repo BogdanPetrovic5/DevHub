@@ -7,12 +7,14 @@ using System.Security.Cryptography;
 
 namespace Backend.Services.Security
 {
-    public class JwtService : IJwtService
+    public class TokenService : ITokenService
     {
         private readonly IConfiguration _configuration;
-        public JwtService(IConfiguration configuration)
+        private readonly ITokenRepository refreshTokenRepository;
+        public TokenService(IConfiguration configuration, ITokenRepository refreshTokenRepository)
         {
             _configuration = configuration;
+            this.refreshTokenRepository = refreshTokenRepository;
         }
         public string GenerateAccessToken(Models.User user, bool isCli = false)
         {
@@ -42,6 +44,33 @@ namespace Backend.Services.Security
             using var range = RandomNumberGenerator.Create();
             range.GetBytes(randomBytes);
             return Convert.ToBase64String(randomBytes);
+        }
+
+     
+
+        Task<RefreshToken?> ITokenService.GetRefreshToken(string refreshToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task ITokenService.RevokeAllUserTokens(Guid userId)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task ITokenService.RevokeToken(string refreshToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task ITokenService.SaveRefreshToken(Guid userId, string refreshToken, bool rememberMe)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task ITokenService.SaveRefreshToken(Guid userId, string refreshToken, bool rememberMe, DateTime expDate)
+        {
+            throw new NotImplementedException();
         }
     }
 }
