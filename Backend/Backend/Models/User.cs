@@ -11,6 +11,8 @@ namespace Backend.Models
         public string LastName { get; set; } = String.Empty;
         public string Email { get; set; } = String.Empty;
         public string PasswordHash { get; set; } = String.Empty;
+        public bool IsExternalAuth { get; set; } = false;
+        public string? GoogleId { get; set; } 
         public List<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
         public List<Repo> Repositories { get; set; } = new List<Repo>();
         public List<RepoCommit> RepoCommits { get; set; } = new List<RepoCommit>();

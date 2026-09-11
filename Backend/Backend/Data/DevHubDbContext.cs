@@ -56,7 +56,10 @@ namespace Backend.Data
                 .HasForeignKey(rc => rc.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<RepoCommit>().HasIndex(rc => rc.UserId);
-
+            modelBuilder.Entity<User>()
+            .HasIndex(u => u.GoogleId)
+            .IsUnique()
+            .HasFilter("[GoogleId] IS NOT NULL");
             modelBuilder.Entity<RepoCommitFile>().HasKey(rcf => rcf.Id);
             modelBuilder.Entity<RepoCommitFile>().HasOne(rcf => rcf.Commit)
                 .WithMany(rc => rc.Files)

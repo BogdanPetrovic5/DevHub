@@ -1,9 +1,13 @@
 ﻿using Backend.Dto.Authentication;
 using Backend.Interfaces.Authentication;
 using Backend.Interfaces.Security;
+using Backend.Interfaces.User;
 using Backend.Models;
+using Backend.Options;
 using Backend.Responses;
 using Backend.Security;
+using Google.Apis.Auth;
+using Microsoft.Extensions.Options;
 
 namespace Backend.Services.Authentication
 {
@@ -11,18 +15,25 @@ namespace Backend.Services.Authentication
     {
         private readonly IAuthenticationRepository _authenticationRepository;
         private readonly IPasswordEncoder _passwordEncoder;
-        private readonly IJwtService _jwtService;
-        private readonly IRefreshTokenRepository _refreshTokenRepository;
+        private readonly ITokenService _tokenService;
+        private readonly IConfiguration _configuration;
+        private readonly GoogleOptions _googleOptions;
+        private readonly IUserRepository _userRepository;
         public AuthenticationService(
             IAuthenticationRepository authenticationRepository,
             IPasswordEncoder passwordEncoder,
-            IJwtService jwtService,
-            IRefreshTokenRepository refreshTokenRepository
+            ITokenService tokenService,
+            IConfiguration configuration,
+            IUserRepository userRepository,
+            IOptions<GoogleOptions> googleOptions
             ) { 
             _authenticationRepository = authenticationRepository;
             _passwordEncoder = passwordEncoder;
-            _jwtService = jwtService;
-            _refreshTokenRepository = refreshTokenRepository;
+            _tokenService = tokenService;
+            _configuration = configuration;
+            _userRepository = userRepository;
+            _googleOptions = googleOptions.Value;
+
         }
         public async Task<AuthResponse> Register(RegistrationDto registrationDto)
         {
@@ -41,11 +52,11 @@ namespace Backend.Services.Authentication
 
             if (response.Success)
             {
-                response.AccessToken = _jwtService.GenerateAccessToken(user);
-                string refreshToken = _jwtService.GenerateRefreshToken();
+                response.AccessToken = _tokenService.GenerateAccessToken(user);
+                string refreshToken = _tokenService.GenerateRefreshToken();
                 response.RefreshToken = refreshToken;
 
-                await _refreshTokenRepository.SaveRefreshToken(user.Id, refreshToken, false);
+                await _tokenService.SaveRefreshToken(user.Id, refreshToken, false);
             }
 
             return response;
@@ -56,12 +67,14 @@ namespace Backend.Services.Authentication
         {
             Models.User? user = await _authenticationRepository.GetUserByEmail(loginDto.Email);
 
-            if (user == null || !_passwordEncoder.VerifyPassword(loginDto.Password, user.PasswordHash))
+         
+            if (user == null || user.IsExternalAuth || !_passwordEncoder.VerifyPassword(loginDto.Password, user.PasswordHash))
                 return new AuthResponse { Success = false, Message = "Invalid email or password" };
 
-            string accessToken = _jwtService.GenerateAccessToken(user, isCli);
-            string refreshToken = _jwtService.GenerateRefreshToken();
-            await _refreshTokenRepository.SaveRefreshToken(user.Id, refreshToken, loginDto.RememberMe);
+            
+            string accessToken = _tokenService.GenerateAccessToken(user, isCli);
+            string refreshToken = _tokenService.GenerateRefreshToken();
+            await _tokenService.SaveRefreshToken(user.Id, refreshToken, loginDto.RememberMe);
 
             return new AuthResponse
             {
@@ -74,17 +87,17 @@ namespace Backend.Services.Authentication
 
         public async Task Logout(string refreshToken)
         {
-            await _refreshTokenRepository.RevokeToken(refreshToken);
+            await _tokenService.RevokeToken(refreshToken);
           
         }
 
         public async Task<AuthResponse> Refresh(string refreshToken)
         {
-            RefreshToken? token = await _refreshTokenRepository.GetRefreshToken(refreshToken);
+            RefreshToken? token = await _tokenService.GetRefreshToken(refreshToken);
 
             if(token != null && token.IsRevoked)
             {
-                await _refreshTokenRepository.RevokeAllUserTokens(token.UserId);
+                await _tokenService.RevokeAllUserTokens(token.UserId);
                 return new AuthResponse { Success = false, Message = "Token reuse detected" };
             }
             if(token == null || token.ExpiresAt < DateTime.UtcNow)
@@ -96,11 +109,11 @@ namespace Backend.Services.Authentication
                 return new AuthResponse { Success = false, Message = "User not found" };
             }
 
-            string newAccessToken = _jwtService.GenerateAccessToken(user);
-            string newRefreshToken = _jwtService.GenerateRefreshToken();
+            string newAccessToken = _tokenService.GenerateAccessToken(user);
+            string newRefreshToken = _tokenService.GenerateRefreshToken();
             token.IsRevoked = true;
 
-            await _refreshTokenRepository.SaveRefreshToken(user.Id, newRefreshToken, token.RememberMe, token.ExpiresAt);
+            await _tokenService.SaveRefreshToken(user.Id, newRefreshToken, token.RememberMe, token.ExpiresAt);
             return new AuthResponse
             {
                 Success = true,
@@ -108,6 +121,43 @@ namespace Backend.Services.Authentication
                 AccessToken = newAccessToken,
                 RefreshToken = newRefreshToken,
                 RememberMe = token.RememberMe
+            };
+        }
+
+        public async Task<AuthResponse> GoogleLogin(string idToken)
+        {
+            GoogleJsonWebSignature.Payload payload;
+            try
+            {
+                payload = await GoogleJsonWebSignature.ValidateAsync(idToken, new GoogleJsonWebSignature.ValidationSettings
+                {
+                    Audience = new[] { _googleOptions.ClientId }
+                });
+            }
+            catch (Exception)
+            {
+                return new AuthResponse { Success = false, Message = "Invalid Google token" };
+            }
+            Models.User? user = await _authenticationRepository.GetUserByEmail(payload.Email);
+            if (user == null)
+            {
+                user = new Models.User
+                {
+                    Email = payload.Email,
+                    Username = payload.Email.Split('@')[0], 
+                    IsExternalAuth = true,
+                    GoogleId = payload.Subject,
+                    FirstName = payload.GivenName,
+                    LastName = payload.FamilyName
+                };
+                await _userRepository.AddUser(user);
+            }
+            return new AuthResponse
+            {
+                Success = true,
+                Message = "Login successful",
+                AccessToken = _tokenService.GenerateAccessToken(user),
+                RefreshToken = _tokenService.GenerateRefreshToken()
             };
         }
     }

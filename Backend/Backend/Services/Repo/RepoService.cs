@@ -55,7 +55,7 @@ namespace Backend.Services.Repository
                 entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
                 return await _repoRepository.GetByUsernameAndName(username, repoName);
             });
-            if (repo == null) return null;
+            if (repo == null) throw new RepoNotFoundException();
 
             if (repo.IsPrivate && repo.UserId != userId) return null;
 

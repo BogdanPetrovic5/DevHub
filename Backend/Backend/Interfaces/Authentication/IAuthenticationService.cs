@@ -9,6 +9,6 @@ namespace Backend.Interfaces.Authentication
         Task<AuthResponse> Login(LoginDto loginDto, bool isCli = false);
         Task Logout(string refreshToken);
         Task<AuthResponse> Refresh(string refreshToken);
-
+        Task<AuthResponse> GoogleLogin(string idToken);
     }
 }

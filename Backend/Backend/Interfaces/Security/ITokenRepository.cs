@@ -2,7 +2,7 @@
 
 namespace Backend.Interfaces.Security
 {
-    public interface IRefreshTokenRepository
+    public interface ITokenRepository
     {
         Task SaveRefreshToken(Guid userId, string refreshToken, bool rememberMe);
         Task SaveRefreshToken(Guid userId, string refreshToken, bool rememberMe, DateTime expDate);

@@ -5,6 +5,7 @@ namespace Backend.Interfaces.User
 {
     public interface IUserRepository
     {
-        public Task<Backend.Models.User?> GetUser(string username); 
+        public Task<Backend.Models.User?> GetUser(string username);
+        public Task AddUser(Models.User user);
     }
 }

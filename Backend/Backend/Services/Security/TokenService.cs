@@ -10,11 +10,11 @@ namespace Backend.Services.Security
     public class TokenService : ITokenService
     {
         private readonly IConfiguration _configuration;
-        private readonly ITokenRepository refreshTokenRepository;
+        private readonly ITokenRepository _refreshTokenRepository;
         public TokenService(IConfiguration configuration, ITokenRepository refreshTokenRepository)
         {
             _configuration = configuration;
-            this.refreshTokenRepository = refreshTokenRepository;
+            _refreshTokenRepository = refreshTokenRepository;
         }
         public string GenerateAccessToken(Models.User user, bool isCli = false)
         {
@@ -48,29 +48,29 @@ namespace Backend.Services.Security
 
      
 
-        Task<RefreshToken?> ITokenService.GetRefreshToken(string refreshToken)
+        public async Task<RefreshToken?> GetRefreshToken(string refreshToken)
         {
-            throw new NotImplementedException();
+            return await _refreshTokenRepository.GetRefreshToken(refreshToken);
         }
 
-        Task ITokenService.RevokeAllUserTokens(Guid userId)
+        public async Task RevokeAllUserTokens(Guid userId)
         {
-            throw new NotImplementedException();
+            await _refreshTokenRepository.RevokeAllUserTokens(userId);
         }
 
-        Task ITokenService.RevokeToken(string refreshToken)
+        public async Task RevokeToken(string refreshToken)
         {
-            throw new NotImplementedException();
+            await _refreshTokenRepository.RevokeToken(refreshToken);
         }
 
-        Task ITokenService.SaveRefreshToken(Guid userId, string refreshToken, bool rememberMe)
+        public async Task SaveRefreshToken(Guid userId, string refreshToken, bool rememberMe)
         {
-            throw new NotImplementedException();
+            await _refreshTokenRepository.SaveRefreshToken(userId, refreshToken, rememberMe);
         }
 
-        Task ITokenService.SaveRefreshToken(Guid userId, string refreshToken, bool rememberMe, DateTime expDate)
+        public async Task SaveRefreshToken(Guid userId, string refreshToken, bool rememberMe, DateTime expDate)
         {
-            throw new NotImplementedException();
+            await _refreshTokenRepository.SaveRefreshToken(userId, refreshToken, rememberMe, expDate);
         }
     }
 }
