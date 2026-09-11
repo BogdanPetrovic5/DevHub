@@ -24,6 +24,16 @@ namespace Backend.Controllers
             _cookieService = cookieService;
             
         }
+        public async Task<ActionResult<AuthResponse>> GoogleLogin([FromBody] GoogleDto googleDto)
+        {
+            AuthResponse authResponse = await _authenticationService.GoogleLogin(googleDto.IdToken);
+            if (!authResponse.Success)
+            {
+                return Unauthorized(authResponse);
+            }
+            _cookieService.AppendAuthCookies(Response, authResponse.AccessToken, authResponse.RefreshToken, authResponse.RememberMe);
+            return Ok(authResponse);
+        }
         [HttpPost("refresh")]
         public async Task<ActionResult<AuthResponse>> Refresh()
         {
