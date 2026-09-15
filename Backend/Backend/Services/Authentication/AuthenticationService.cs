@@ -124,7 +124,7 @@ namespace Backend.Services.Authentication
             };
         }
 
-        public async Task<AuthResponse> GoogleLogin(string idToken)
+        public async Task<AuthResponse> GoogleLogin(string idToken, string nonce)
         {
             GoogleJsonWebSignature.Payload payload;
             try
@@ -134,9 +134,15 @@ namespace Backend.Services.Authentication
                     Audience = new[] { _googleOptions.ClientId }
                 });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Console.WriteLine($"[GoogleLogin] ValidateAsync FAILED: {ex.Message}");
                 return new AuthResponse { Success = false, Message = "Invalid Google token" };
+            }
+            if (string.IsNullOrEmpty(nonce) || payload.Nonce != nonce)
+            {
+                Console.WriteLine($"[GoogleLogin] Invalid NONCE: {nonce}");
+                return new AuthResponse { Success = false, Message = "Invalid nonce" };
             }
             Models.User? user = await _authenticationRepository.GetUserByEmail(payload.Email);
             if (user == null)
@@ -152,12 +158,15 @@ namespace Backend.Services.Authentication
                 };
                 await _userRepository.AddUser(user);
             }
+            string accessToken = _tokenService.GenerateAccessToken(user);
+            string refreshToken = _tokenService.GenerateRefreshToken();
+            await _tokenService.SaveRefreshToken(user.Id, refreshToken, false);
             return new AuthResponse
             {
                 Success = true,
                 Message = "Login successful",
-                AccessToken = _tokenService.GenerateAccessToken(user),
-                RefreshToken = _tokenService.GenerateRefreshToken()
+                AccessToken = accessToken,
+                RefreshToken = refreshToken
             };
         }
     }
