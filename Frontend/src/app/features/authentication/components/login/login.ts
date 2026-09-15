@@ -3,10 +3,11 @@ import { AuthService } from '../../../../core/services/auth/auth-service';
 import { FormBuilder, Validators, ɵInternalFormsSharedModule, ReactiveFormsModule, ValidationErrors } from '@angular/forms';
 import { LoginRequest } from '../../../../core/models/auth.model';
 import { Router } from '@angular/router';
+import { GoogleButton } from '../../../../shared/components/google-button/google-button';
 
 @Component({
   selector: 'app-login',
-  imports: [ɵInternalFormsSharedModule, ReactiveFormsModule],
+  imports: [ɵInternalFormsSharedModule, ReactiveFormsModule, GoogleButton],
   templateUrl: './login.html',
   styleUrl: './login.scss',
 })
@@ -16,7 +17,7 @@ export class Login {
   private _authService = inject(AuthService);
   private _fb = inject(FormBuilder);
   private _router = inject(Router)
-
+  
   isLoading = signal(false);
   errorMessage = signal<string | null>(null);
   validationErrors = signal<ValidationErrors | null>(null);
@@ -31,7 +32,29 @@ export class Login {
     const errors = this.validationErrors();
     return errors ? errors[key]?.[0] || null : null;
   }
+  onCredentials(credentials: { idToken: string, nonce: string | null }) {
+    this.isLoading.set(true);
+    this.errorMessage.set(null);
+    this.validationErrors.set(null);
+    this._authService.authenticateWithGoogle(credentials).subscribe({
+      next: (response) => {
+        this.isLoading.set(false)
+        if (response.success) {
+          this._router.navigate(['dashboard'])
+        }
+      },
+      error: (err) => {
+        this.isLoading.set(false);
+        console.log('Error during Google authentication:', err);
+        if (err.error?.errors) {
+          this.validationErrors.set(err.error.errors);
+        } else {
+          this.errorMessage.set(err.error?.message ?? 'Login failed')
+        } 
+      }
 
+    })
+  }
   login(){
     if(this.loginForm.invalid) return;
 
