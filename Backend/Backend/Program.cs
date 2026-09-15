@@ -44,17 +44,17 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddCors(options =>
-{
-    options.AddDefaultPolicy(builder =>
-    {
-        builder.WithOrigins("http://localhost:4200")
-        .AllowAnyHeader()
-        .AllowAnyMethod()
-        .AllowCredentials();
+//builder.Services.AddCors(options =>
+//{
+//    options.AddDefaultPolicy(builder =>
+//    {
+//        builder.WithOrigins("http://localhost:4200")
+//        .AllowAnyHeader()
+//        .AllowAnyMethod()
+//        .AllowCredentials();
 
-    });
-});
+//    });
+//});
 builder.Services.AddRateLimiter(options =>
 {
     options.AddFixedWindowLimiter("login", o =>
@@ -126,7 +126,12 @@ if (app.Environment.IsDevelopment())
 app.Use(async (context, next) =>
 {
     context.Response.Headers.Append("X-Frame-Options", "DENY");
-    context.Response.Headers.Append("Content-Security-Policy", "frame-ancestors 'none'");
+    context.Response.Headers.Append("Content-Security-Policy",
+    "default-src 'self'; " +
+    "script-src 'self'; " +
+    "connect-src 'self' https://localhost:5207;" + 
+    "frame-ancestors 'none'; " +
+    "object-src 'none'");
     await next();
 });
 app.UseExceptionHandler();

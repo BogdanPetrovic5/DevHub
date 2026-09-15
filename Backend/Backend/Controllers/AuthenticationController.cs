@@ -22,11 +22,12 @@ namespace Backend.Controllers
         {
             _authenticationService = authenticationService;
             _cookieService = cookieService;
-            
+
         }
+        [HttpPost("google")]
         public async Task<ActionResult<AuthResponse>> GoogleLogin([FromBody] GoogleDto googleDto)
         {
-            AuthResponse authResponse = await _authenticationService.GoogleLogin(googleDto.IdToken);
+            AuthResponse authResponse = await _authenticationService.GoogleLogin(googleDto.IdToken, googleDto.Nonce);
             if (!authResponse.Success)
             {
                 return Unauthorized(authResponse);
