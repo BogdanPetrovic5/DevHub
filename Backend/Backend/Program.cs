@@ -44,17 +44,17 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-//builder.Services.AddCors(options =>
-//{
-//    options.AddDefaultPolicy(builder =>
-//    {
-//        builder.WithOrigins("http://localhost:4200")
-//        .AllowAnyHeader()
-//        .AllowAnyMethod()
-//        .AllowCredentials();
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(builder =>
+    {
+        builder.WithOrigins("http://localhost:4200")
+        .AllowAnyHeader()
+        .AllowAnyMethod()
+        .AllowCredentials();
 
-//    });
-//});
+    });
+});
 builder.Services.AddRateLimiter(options =>
 {
     options.AddFixedWindowLimiter("login", o =>
