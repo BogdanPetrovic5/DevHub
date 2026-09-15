@@ -11,7 +11,11 @@ export class AuthService {
     private _httpClient = inject(HttpClient);
     currentUser = signal<MeDto | null>(this._loadUser());
 
-
+    authenticateWithGoogle(googleRequest: { idToken: string, nonce: string | null }): Observable<AuthResponse> { 
+        console.log('Authenticating with Google:', googleRequest);
+        const url = `${environment.apiUrl}/api/auth/google`;
+        return this._httpClient.post<AuthResponse>(url, googleRequest, { withCredentials: true });
+    }
     getMe(): Observable<MeDto> {
         const url = `${environment.apiUrl}/api/auth/me`;
         return this._httpClient.get<MeDto>(url, { withCredentials: true }).pipe(

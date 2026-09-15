@@ -3,6 +3,7 @@ import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors, Va
 import { AuthService } from '../../../../core/services/auth/auth-service';
 import { RegisterRequest } from '../../../../core/models/auth.model';
 import { Router } from '@angular/router';
+import { GoogleButton } from '../../../../shared/components/google-button/google-button';
 
 
 function passwordMatchValidator(form: AbstractControl) {
@@ -13,7 +14,7 @@ function passwordMatchValidator(form: AbstractControl) {
 
 @Component({
   selector: 'app-register',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, GoogleButton],
   templateUrl: './register.html',
   styleUrl: './register.scss',
 })
