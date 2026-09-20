@@ -38,6 +38,8 @@ A GitHub-inspired developer platform built with Angular 17+ and .NET 10.
 | POST | /api/auth/refresh | No | Refreshes access token via HttpOnly cookie |
 | DELETE | /api/auth/logout | No | Logout, clears auth cookies and revokes refresh token |
 | POST | /api/auth/cli-login | CLI only* | Login for CLI, returns token in response body |
+| POST | /api/auth/google | No | Sign in with a Google ID token, sets auth cookies |
+| GET | /api/search?q=... | Public* | Search repositories and users |
 | POST | /api/repo/new | 🔒 | Create a new repository |
 | GET | /api/repo/user | 🔒 | Get all repositories for the authenticated user |
 | POST | /api/repo/{repoId}/upload | 🔒 | Upload a ZIP file as a new commit |
@@ -171,6 +173,60 @@ Login for DevHub CLI. Returns tokens in response body instead of cookies.
 ```
 
 **Response `403 Forbidden`** — missing or invalid `User-Agent` header
+
+---
+
+### POST /api/auth/google
+Authenticate with a Google ID token and create or log in the corresponding local user account.
+
+**Body**
+```json
+{
+  "idToken": "string",
+  "nonce": "string"
+}
+```
+
+**Response `200 OK`**
+```json
+{ "success": true, "message": "Login successful" }
+```
+Sets `accessToken` and `refreshToken` cookies.
+
+**Response `401 Unauthorized`**
+```json
+{ "success": false, "message": "Invalid Google token" }
+```
+
+**Response `401 Unauthorized`** — invalid nonce
+```json
+{ "success": false, "message": "Invalid nonce" }
+```
+
+---
+
+### GET /api/search
+Search public repositories and users by query.
+
+**Query Params**
+- `q` — search term
+
+**Response `200 OK`**
+```json
+{
+  "repositories": [
+    {
+      "ownerUsername": "string",
+      "repoName": "string"
+    }
+  ],
+  "users": [
+    {
+      "username": "string"
+    }
+  ]
+}
+```
 
 ---
 
